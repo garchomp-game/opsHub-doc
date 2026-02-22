@@ -1,0 +1,67 @@
+---
+title: セットアップ
+description: 開発環境の構築手順
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## 前提条件
+
+- **Node.js** v18 以上
+- **Docker** & **Docker Compose**
+- **npm**
+
+## 起動手順
+
+<Steps>
+
+1. **リポジトリをクローン**
+
+   ```bash
+   git clone <repository-url>
+   cd starlight-test
+   ```
+
+2. **Supabase を起動**
+
+   ```bash
+   cd app/supabase
+   docker compose up -d
+   ```
+
+   起動後のアクセス先:
+   | サービス | URL |
+   |---|---|
+   | API Gateway | http://localhost:8000 |
+   | Studio (管理画面) | http://localhost:3100 |
+   | Inbucket (メール) | http://localhost:9000 |
+
+3. **Next.js の依存関係をインストール**
+
+   ```bash
+   cd app
+   npm install
+   ```
+
+4. **開発サーバーを起動**
+
+   ```bash
+   npm run dev
+   ```
+
+   http://localhost:3000 でアプリにアクセスできます。
+
+</Steps>
+
+<Aside type="caution" title="本番利用時の注意">
+  `app/supabase/.env` のシークレット値（`POSTGRES_PASSWORD`, `JWT_SECRET` 等）はデモ用デフォルトです。本番環境では必ず変更してください。
+</Aside>
+
+## ドキュメントサイトの起動
+
+```bash
+cd docs
+npm run dev
+```
+
+http://localhost:4321 でドキュメントにアクセスできます。

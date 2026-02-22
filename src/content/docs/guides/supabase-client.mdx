@@ -1,0 +1,114 @@
+---
+title: Supabase クライアント
+description: Next.js App Router での Supabase クライアントの使い分け
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## クライアントの種類
+
+`@supabase/ssr` を使用して、利用箇所に応じた 3 種類のクライアントを用意しています。
+
+### Server Components / Server Actions
+
+```tsx
+// src/app/some-page/page.tsx (Server Component)
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Page() {
+  const supabase = await createClient();
+  const { data: items } = await supabase.from("items").select();
+
+  return (
+    <ul>
+      {items?.map((item) => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+<Aside type="note">
+  Server 用クライアントは `await createClient()` と非同期で呼び出します。内部で `next/headers` の `cookies()` を使用するためです。
+</Aside>
+
+### Client Components
+
+```tsx
+"use client";
+
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+
+export function ItemList() {
+  const [items, setItems] = useState<any[]>([]);
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.from("items").select().then(({ data }) => {
+      if (data) setItems(data);
+    });
+  }, []);
+
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Middleware（セッション管理）
+
+`src/middleware.ts` が全リクエストで自動的にセッションをリフレッシュします。
+
+```ts
+// src/middleware.ts
+import { type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
+
+export async function middleware(request: NextRequest) {
+  return await updateSession(request);
+}
+```
+
+<Aside type="tip">
+  Middleware はセッショントークンの有効期限が切れた場合に自動更新します。個別のページで明示的にリフレッシュ処理を書く必要はありません。
+</Aside>
+
+## 認証の例
+
+### サインアップ
+
+```tsx
+const supabase = createClient(); // or await createClient() (server)
+
+const { data, error } = await supabase.auth.signUp({
+  email: "user@example.com",
+  password: "password123",
+});
+```
+
+### ログイン
+
+```tsx
+const { data, error } = await supabase.auth.signInWithPassword({
+  email: "user@example.com",
+  password: "password123",
+});
+```
+
+### ログアウト
+
+```tsx
+await supabase.auth.signOut();
+```
+
+### 現在のユーザーを取得
+
+```tsx
+const { data: { user } } = await supabase.auth.getUser();
+```

@@ -1,0 +1,23 @@
+---
+title: 概要
+description: Starlight App プロジェクトの概要
+---
+
+## プロジェクトについて
+
+Starlight App は **Next.js** + **Ant Design** + **Supabase (Docker)** で構成されたウェブアプリケーションです。
+
+### リポジトリ構成
+
+```
+starlight-test/
+├── app/    … Next.js アプリケーション
+└── docs/   … ドキュメント（このサイト）
+```
+
+### 主な特徴
+
+- **Next.js 16 (App Router)** — React Server Components、Server Actions を活用したモダンな構成
+- **Ant Design** — 豊富な UI コンポーネントライブラリ（SSR 対応済み）
+- **Supabase (Self-hosting)** — Docker Compose によるローカル完結型の BaaS 環境
+- **`@supabase/ssr`** — Cookie ベースの認証で Server Components と完全統合

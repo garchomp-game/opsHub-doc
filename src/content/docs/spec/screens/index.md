@@ -15,13 +15,13 @@ description: SPEC-SCR の目次と画面仕様のステータス管理
 
 | SPEC-SCR | 画面名 | REQ | ステータス |
 |---|---|---|---|
-| [SCR-B01](./SCR-B01/) | 申請一覧 | REQ-B03 | Draft |
-| [SCR-B02](./SCR-B02/) | 申請作成 | REQ-B01 | Draft |
-| [SCR-B03](./SCR-B03/) | 申請詳細/承認 | REQ-B02 | Draft |
-| [SCR-C01](./SCR-C01/) | プロジェクト一覧 | REQ-C01 | Draft |
+| [SCR-B01](./scr-b01/) | 申請一覧 | REQ-B03 | Draft |
+| [SCR-B02](./scr-b02/) | 申請作成 | REQ-B01 | Draft |
+| [SCR-B03](./scr-b03/) | 申請詳細/承認 | REQ-B02 | Draft |
+| [SCR-C01](./scr-c01/) | プロジェクト一覧 | REQ-C01 | Draft |
 | SCR-C02 | プロジェクト詳細 | REQ-C01 | 未着手 |
 | SCR-C03 | タスク管理 | REQ-C02 | 未着手 |
-| [SCR-C04](./SCR-C04/) | 工数入力 | REQ-C03 | Draft |
+| [SCR-C04](./scr-c04/) | 工数入力 | REQ-C03 | Draft |
 | SCR-C05 | 工数集計 | REQ-C03 | 未着手 |
 | SCR-A01 | テナント管理 | REQ-A01 | 未着手 |
 | SCR-A02 | ユーザー管理 | REQ-A02 | 未着手 |

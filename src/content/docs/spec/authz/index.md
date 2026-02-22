@@ -7,7 +7,7 @@ description: RBAC/RLSに基づく認可の設計方針と実装ルール
 - **目的**: 認証済みユーザーに対する認可（何ができるか）の仕様を確定する
 - **対象範囲（In）**: 認可チェックの実施層、RLS/アプリ層の役割分担、画面/APIごとの権限
 - **対象範囲（Out）**: RLSポリシーの具体SQL（→ DD-RLS）
-- **Related**: [ADR-0001](../../adr/ADR-0001/) / [ロール定義](../../requirements/roles/) / [ADR-0003](../../adr/ADR-0003/)
+- **Related**: [ADR-0001](../../adr/adr-0001/) / [ロール定義](../../requirements/roles/) / [ADR-0003](../../adr/adr-0003/)
 
 ---
 

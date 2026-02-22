@@ -19,6 +19,14 @@ export default defineConfig({
 			},
 			sidebar: [
 				{ label: 'START HERE', link: '/start-here/' },
+				{
+					label: '🚀 キャッチアップ',
+					items: [
+						{ label: '設計の要点（5つの軸）', link: '/catchup/design-pillars/' },
+						{ label: '用語集', link: '/catchup/glossary/' },
+						{ label: '混同しやすいポイント', link: '/catchup/confusion-points/' },
+					],
+				},
 				{ label: '規約 (Conventions)', link: '/conventions/' },
 				{
 					label: '要件定義 (Requirements)',

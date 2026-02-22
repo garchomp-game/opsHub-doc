@@ -7,7 +7,7 @@ description: OpsHub の主要テーブル定義・制約・Index
 - **目的**: 主要テーブルのスキーマを定義し、実装の基盤を確立する
 - **対象範囲（In）**: テーブル定義、制約、Index、共通カラム規約
 - **対象範囲（Out）**: マイグレーションスクリプト（実装フェーズ）
-- **Related**: [ADR-0003](../../adr/ADR-0003/) / [ロール定義](../../requirements/roles/) / [RLS設計](../rls/)
+- **Related**: [ADR-0003](../../adr/adr-0003/) / [ロール定義](../../requirements/roles/) / [RLS設計](../rls/)
 
 ---
 

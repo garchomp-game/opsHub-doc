@@ -47,7 +47,11 @@ description: 命名・テンプレ・品質ゲート・追跡性を統一する
 | テナント管理者 | Tenant Admin | テナント内のユーザー・ロール管理を行う管理者 |
 | プロジェクト | Project | 案件。タスク・工数・経費・請求の親単位 |
 | ワークフロー | Workflow | 申請→承認/差戻しの一連の流れ |
+| 申請 | Request | 承認を必要とする業務データの入れ物。経費やTimesheetの「実データ」とは別概念 |
 | 経費 | Expense | 業務上の経費精算 |
 | 請求 | Invoice | 取引先への請求管理 |
+| 締め/ロック | Close / Lock | 会計期間やデータの確定。締め後の編集ルールが設計の核 |
+| 監査ログ | Audit Log | いつ誰が何をしたかの証跡（業務イベント中心）。検索・監査向け |
+| 履歴 | History | 状態遷移・差戻し理由・コメント等。業務の流れを追うためのもの。監査ログとは別 |
 | RLS | RLS | Row Level Security。PostgreSQLの行レベルアクセス制御 |
 | RBAC | RBAC | Role-Based Access Control。ロールによるアクセス制御 |

@@ -7,7 +7,7 @@ description: Row Level Security ポリシーの具体定義
 - **目的**: 全業務テーブルのRLSポリシーを定義し、テナント分離とロールベースアクセスを実現する
 - **対象範囲（In）**: RLSポリシーのSQL定義、テスト方針
 - **対象範囲（Out）**: アプリ層の認可チェック（→ spec/authz）
-- **Related**: [ADR-0001](../../adr/ADR-0001/) / [ADR-0003](../../adr/ADR-0003/) / [DB設計](../db/) / [権限/認可](../../spec/authz/)
+- **Related**: [ADR-0001](../../adr/adr-0001/) / [ADR-0003](../../adr/adr-0003/) / [DB設計](../db/) / [権限/認可](../../spec/authz/)
 
 ---
 

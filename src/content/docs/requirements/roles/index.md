@@ -7,7 +7,7 @@ description: OpsHubのロール定義と基本的なアクセス権限マトリ�
 - **目的**: システムで使用するロールと、各ロールの責務・権限範囲を定義する
 - **対象範囲（In）**: ロール名称・責務・画面/機能レベルのアクセス権限
 - **対象範囲（Out）**: RLSポリシーの具体的な実装（→ DD-RLS）
-- **Related**: [ADR-0001](../../adr/ADR-0001/) / [Project Brief](../project-brief/) / [認可仕様](../../spec/authz/)
+- **Related**: [ADR-0001](../../adr/adr-0001/) / [Project Brief](../project-brief/) / [認可仕様](../../spec/authz/)
 
 ## ロール一覧
 

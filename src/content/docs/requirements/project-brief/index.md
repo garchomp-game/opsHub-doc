@@ -34,8 +34,8 @@ description: 大規模業務アプリ OpsHub（仮）の要件定義
 | A | テナント/組織/権限 | マルチテナント、ユーザー管理、RBAC/RLS | **Must** |
 | B | ワークフロー | 汎用的な申請→承認/差戻しフロー | **Must** |
 | C | 案件/タスク/工数 | プロジェクト管理、タスク、工数入力/集計 | **Must** |
-| D | 経費 | 経費申請、承認、集計 | **Should** |
-| E | 請求 | 請求書作成、ステータス管理 | **Should** |
+| D | 経費 | 経費申請、承認、集計、締め、証憑管理 | **Must** |
+| E | 請求 | 請求書作成、ステータス管理、PDF/帳票 | **Should** |
 | F | ドキュメント | ファイルアップロード/管理/共有 | **Could** |
 | G | 通知/検索/レポート | 通知配信、全文検索、レポート/ダッシュボード | **Could** |
 
@@ -81,8 +81,8 @@ description: 大規模業務アプリ OpsHub（仮）の要件定義
 | UI | Ant Design | エンタープライズ向け豊富なコンポーネント |
 | バックエンド/BaaS | Supabase (Self-hosting) | PostgreSQL + Auth + Storage + Realtime |
 | 認証 | Supabase Auth (GoTrue) | 標準統合 |
-| 認可 | RBAC + RLS | [ADR-0001](../../adr/ADR-0001/) |
-| テナント分離 | tenant_id + RLS | [ADR-0003](../../adr/ADR-0003/) |
+| 認可 | RBAC + RLS | [ADR-0001](../../adr/adr-0001/) |
+| テナント分離 | tenant_id + RLS | [ADR-0003](../../adr/adr-0003/) |
 
 ---
 

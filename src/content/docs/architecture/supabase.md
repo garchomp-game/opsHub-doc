@@ -3,6 +3,9 @@ title: Supabase 構成
 description: Supabase Docker 環境のサービス構成と設定
 ---
 
+> [!WARNING]
+> **このページは Archive（参照専用）です。** 最新の正本は [アーキテクチャ概要](/spec/architecture/) を参照してください。更新は原則行いません。
+
 ## サービス構成
 
 Docker Compose で以下のサービスが起動します。

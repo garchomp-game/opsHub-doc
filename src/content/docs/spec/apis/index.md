@@ -22,9 +22,9 @@ description: SPEC-API の目次とステータス管理
 
 | SPEC-API | 名称 | 種別 | REQ | ステータス |
 |---|---|---|---|---|
-| [API-B01](./API-B01/) | 申請一覧取得 | Server Component | REQ-B03 | Draft |
-| [API-B02](./API-B02/) | 申請作成/更新 | Server Action | REQ-B01 | Draft |
-| [API-B03](./API-B03/) | 申請承認/差戻し | Server Action | REQ-B02 | Draft |
+| [API-B01](./api-b01/) | 申請一覧取得 | Server Component | REQ-B03 | Draft |
+| [API-B02](./api-b02/) | 申請作成/更新 | Server Action | REQ-B01 | Draft |
+| [API-B03](./api-b03/) | 申請承認/差戻し | Server Action | REQ-B02 | Draft |
 | API-C01 | プロジェクトCRUD | Server Action | REQ-C01 | 未着手 |
 | API-C04 | 工数入力/更新 | Server Action | REQ-C03 | 未着手 |
 | API-A02 | ユーザー招待 | Server Action | REQ-A02 | 未着手 |

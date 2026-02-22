@@ -7,7 +7,7 @@ description: OpsHub のシステム全体構成と技術方針
 - **目的**: システムの全体像と技術選定の根拠を示す
 - **対象範囲（In）**: レイヤー構成、データフロー、技術スタック、デプロイ構成
 - **対象範囲（Out）**: 各コンポーネントの実装詳細（→ Detail）
-- **Related**: [ADR-0001](../../adr/ADR-0001/) / [ADR-0003](../../adr/ADR-0003/) / [NFR](../../requirements/nfr/)
+- **Related**: [ADR-0001](../../adr/adr-0001/) / [ADR-0003](../../adr/adr-0003/) / [NFR](../../requirements/nfr/)
 
 ---
 

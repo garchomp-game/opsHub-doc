@@ -15,18 +15,18 @@ description: SPEC-SCR の目次と画面仕様のステータス管理
 
 | SPEC-SCR | 画面名 | REQ | ステータス |
 |---|---|---|---|
+| [SCR-001](./scr-001/) | ログイン | — | Draft |
+| [SCR-002](./scr-002/) | ダッシュボード | REQ-G03 | Draft |
+| [SCR-A01](./scr-a01/) | テナント管理 | REQ-A01 | Draft |
+| [SCR-A02](./scr-a02/) | ユーザー管理 | REQ-A02 | Draft |
 | [SCR-B01](./scr-b01/) | 申請一覧 | REQ-B03 | Draft |
 | [SCR-B02](./scr-b02/) | 申請作成 | REQ-B01 | Draft |
 | [SCR-B03](./scr-b03/) | 申請詳細/承認 | REQ-B02 | Draft |
 | [SCR-C01](./scr-c01/) | プロジェクト一覧 | REQ-C01 | Draft |
-| SCR-C02 | プロジェクト詳細 | REQ-C01 | 未着手 |
-| SCR-C03 | タスク管理 | REQ-C02 | 未着手 |
+| [SCR-C02](./scr-c02/) | プロジェクト詳細 | REQ-C01 | Draft |
+| [SCR-C03](./scr-c03/) | タスク管理 | REQ-C02 | Draft |
 | [SCR-C04](./scr-c04/) | 工数入力 | REQ-C03 | Draft |
-| SCR-C05 | 工数集計 | REQ-C03 | 未着手 |
-| SCR-A01 | テナント管理 | REQ-A01 | 未着手 |
-| SCR-A02 | ユーザー管理 | REQ-A02 | 未着手 |
-| SCR-001 | ログイン | — | 未着手 |
-| SCR-002 | ダッシュボード | REQ-G03 | 未着手 |
+| [SCR-C05](./scr-c05/) | 工数集計 | REQ-C03 | Draft |
 
 ## Should / Could 画面仕様
 

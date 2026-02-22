@@ -1,0 +1,37 @@
+---
+title: START HERE
+description: 最短で全体を把握し、要件→設計→実装の追跡を可能にする入口
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+## このサイトの役割（SSoT）
+- **目的**: OpsHub（仮）の「要件定義→基本設計→詳細設計」をDocs-as-Codeで管理する
+- **対象範囲**: docs/ 配下の設計文書（実装は app/）
+- **関連**: [規約](./conventions/) / [要件](./requirements/) / [基本設計](./spec/) / [詳細設計](./detail/) / [ADR](./adr/)
+
+<Aside type="note" title="読む順番">
+  初回は「規約 → 要件 → 基本設計 → 詳細設計 → ADR」の順で読む。
+</Aside>
+
+## 30秒サマリ（埋める）
+- **一言で**: （例）申請・工数・経費・請求・ドキュメントを統合する業務SaaS
+- **想定期間**: 1年規模の大規模開発検証
+- **AI API**: 今回は利用しない（外部AI APIの従量課金なし前提）
+
+## 追跡（トレーサビリティ）ルール
+- 要件: `REQ-xxx`
+- 画面仕様: `SPEC-SCR-xxx`
+- API仕様: `SPEC-API-xxx`
+- 詳細設計: `DD-xxx`
+- 意思決定: `ADR-xxxx`
+
+各ページ冒頭に **目的 / In-Out / Related** を必ず記載する。
+
+## 作業フロー（Antigravity運用）
+<Steps>
+1. **PLAN作成**（WBS・マイルストーン・質問リスト）→ クライアントレビュー
+2. **要件定義**（REQと受入条件）→ クライアントレビュー
+3. **基本設計**（画面/API/権限/例外）→ クライアントレビュー
+4. **詳細設計**（DB/RLS/モジュール/テスト）→ クライアントレビュー
+</Steps>

@@ -9,6 +9,7 @@ OpsHub（業務統合SaaS）の **要件定義 → 基本設計 → 詳細設計
 ```
 src/content/docs/
 ├── START-HERE.mdx          # 入口（トレーサビリティルール）
+├── catchup/                # キャッチアップ（設計の要点・用語集）
 ├── conventions/            # 命名規約・用語集
 ├── requirements/           # 要件定義
 │   ├── project-brief/      #   プロジェクト概要
@@ -19,19 +20,22 @@ src/content/docs/
 ├── spec/                   # 基本設計
 │   ├── architecture/       #   アーキテクチャ概要
 │   ├── authz/              #   権限と認可（2層モデル）
-│   ├── screens/            #   画面仕様（SCR-B01〜C04）
-│   ├── apis/               #   API仕様（API-B01〜B03）
+│   ├── ui-layout/          #   UIレイアウト・共通コンポーネント設計
+│   ├── screens/            #   画面仕様（SCR-001〜C03-2, 13画面）
+│   ├── apis/               #   API仕様（API-A01〜C03-2, 10本）
 │   ├── errors/             #   例外・エラー方針
 │   ├── audit-logging/      #   監査ログ方針
 │   └── supabase-client/    #   Supabase クライアント運用規約
 ├── detail/                 # 詳細設計
-│   ├── db/                 #   DB設計（10テーブル + ER図）
+│   ├── db/                 #   DB設計（11テーブル + ER図）
 │   ├── rls/                #   RLS設計（ポリシーSQL）
 │   ├── modules/            #   モジュール設計
 │   ├── sequences/          #   状態遷移 / シーケンス図
-│   └── testing/            #   テスト方針（4層ピラミッド）
+│   ├── testing/            #   テスト方針（4層ピラミッド）
+│   └── setup/              #   環境構築ガイド
 ├── adr/                    # ADR（意思決定ログ）
 │   ├── ADR-0001.md         #   RBAC/RLS 方式の選定
+│   ├── ADR-0002.md         #   監査ログ方式
 │   └── ADR-0003.md         #   マルチテナント分離戦略
 └── plans/                  # 計画
     └── PLAN-2026-02-22.md  #   WBS / マイルストーン
@@ -68,8 +72,8 @@ npm run build
 - **ページ冒頭**: 必ず **目的 / In-Out / Related** を記載
 - **ID体系**:
   - `REQ-xxx` — 機能要件
-  - `SPEC-SCR-xxx` — 画面仕様
-  - `SPEC-API-xxx` — API仕様
+  - `SPEC-SCR-xxx` — 画面仕様（REQ番号に対応、複数画面時は `-1`, `-2`）
+  - `SPEC-API-xxx` — API仕様（同上）
   - `DD-DB-xxx` / `DD-MOD-xxx` — 詳細設計
   - `ADR-xxxx` — 意思決定ログ
 - **追跡性**: REQ → SPEC → DD の Related リンクを全ページに配置

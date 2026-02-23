@@ -182,7 +182,7 @@ PageContainer
   └── DataTable（ソート・ページネーション付き）
 ```
 
-**該当画面**: SCR-B01, SCR-C01, SCR-A02
+**該当画面**: SCR-B01, SCR-C01-1, SCR-A02
 
 ### パターン2: 詳細/タブページ
 
@@ -195,7 +195,7 @@ PageContainer
        └── Tab3: アクティビティ（Timeline）
 ```
 
-**該当画面**: SCR-B03, SCR-C02, SCR-A01
+**該当画面**: SCR-B03, SCR-C01-2, SCR-A01
 
 ### パターン3: フォーム/入力ページ
 

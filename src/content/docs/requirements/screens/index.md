@@ -38,11 +38,11 @@ description: OpsHub の全画面とURL・ロール・対応REQのマッピング
 
 | # | 画面名 | URL（案） | 対象ロール | REQ | SPEC-SCR | 優先度 |
 |---|---|---|---|---|---|---|
-| 09 | プロジェクト一覧 | `/projects` | 全員 | REQ-C01 | SCR-C01 | Must |
-| 10 | プロジェクト詳細 | `/projects/[id]` | Member,PM | REQ-C01 | SCR-C02 | Must |
-| 11 | タスク管理 | `/projects/[id]/tasks` | Member,PM | REQ-C02 | SCR-C03 | Must |
-| 12 | 工数入力 | `/timesheet` | Member,PM | REQ-C03 | SCR-C04 | Must |
-| 13 | 工数集計 | `/timesheet/summary` | PM | REQ-C03 | SCR-C05 | Must |
+| 09 | プロジェクト一覧 | `/projects` | 全員 | REQ-C01 | SCR-C01-1 | Must |
+| 10 | プロジェクト詳細 | `/projects/[id]` | Member,PM | REQ-C01 | SCR-C01-2 | Must |
+| 11 | タスク管理 | `/projects/[id]/tasks` | Member,PM | REQ-C02 | SCR-C02 | Must |
+| 12 | 工数入力 | `/timesheet` | Member,PM | REQ-C03 | SCR-C03-1 | Must |
+| 13 | 工数集計 | `/timesheet/summary` | PM | REQ-C03 | SCR-C03-2 | Must |
 
 ## Epic D: 経費
 

@@ -13,4 +13,5 @@ description: なぜその設計にしたかを残し、将来の手戻りを減�
 
 ## ADR一覧
 - [ADR-0001 RBAC/RLS 方式の選定](./adr-0001/) — Accepted
+- [ADR-0002 監査ログ方式](./adr-0002/) — Accepted
 - [ADR-0003 マルチテナント分離戦略](./adr-0003/) — Accepted

@@ -106,9 +106,40 @@ export async function requireRole(roles: Role[]) {
 
 ---
 
-## 未決事項
-- ロールのキャッシュ戦略（毎回DBクエリ vs セッションキャッシュ）
-- IT Admin のテナント横断アクセス範囲の確定
+## 決定済み事項
+
+### ロールのキャッシュ戦略
+
+**決定**: リクエスト単位のキャッシュ（React `cache()`）を採用。セッションキャッシュは使わない。
+
+```typescript
+// lib/auth.ts
+import { cache } from "react";
+
+// 同一リクエスト内で複数回呼ばれてもDBクエリは1回
+export const getCurrentUserRoles = cache(async () => {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: roles } = await supabase
+    .from("user_roles")
+    .select("role, tenant_id")
+    .eq("user_id", user.id);
+
+  return { user, roles: roles ?? [] };
+});
+```
+
+**理由**:
+- セッションキャッシュはロール変更時の反映遅延リスクがある（セキュリティ上好ましくない）
+- Server Component/Action は同一リクエスト内で複数回認可チェックすることが多い
+- React `cache()` でリクエスト単位の重複排除が可能（DB負荷は1リクエスト=1クエリ）
+- RLS ヘルパー関数 `has_role()` もDB側でキャッシュ効果あり（同一トランザクション内）
+
+### IT Admin のテナント横断範囲
+
+**決定**: Phase 1 では IT Admin は **自テナントの管理操作のみ**。テナント横断はPhase 2で検討。
 
 ## 次アクション
-- 詳細設計で RLS ポリシーの具体SQL を定義（DD-RLS）
+- 詳細設計で RLS ポリシーの具体SQL を定義（DD-RLS）→ ✅ 完了

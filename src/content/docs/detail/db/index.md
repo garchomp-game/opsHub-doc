@@ -195,6 +195,23 @@ description: OpsHub の主要テーブル定義・制約・Index
 
 - **Index**: (tenant_id, user_id, is_read, created_at DESC)
 
+## DD-DB-011 workflow_attachments（申請添付ファイル）
+
+| 列名 | 型 | NULL | 制約 | 備考 |
+|---|---|---:|---|---|
+| id | uuid | NOT NULL | PK | — |
+| tenant_id | uuid | NOT NULL | FK→tenants | — |
+| workflow_id | uuid | NOT NULL | FK→workflows ON DELETE CASCADE | — |
+| file_name | text | NOT NULL | — | 元のファイル名 |
+| file_size | integer | NOT NULL | CHECK(> 0 AND <= 10485760) | 最大10MB |
+| content_type | text | NOT NULL | — | MIME type |
+| storage_path | text | NOT NULL | — | Supabase Storage パス |
+| uploaded_by | uuid | NOT NULL | FK→auth.users | — |
+| created_at | timestamptz | NOT NULL | DEFAULT now() | — |
+
+- **Index**: (tenant_id, workflow_id)
+- **制約**: 1申請あたり最大5ファイル（アプリ層で制御）
+
 ---
 
 ## ER図（主要テーブル）

@@ -95,6 +95,7 @@ export default defineConfig({
 						{ label: 'モジュール設計', link: '/detail/modules/' },
 						{ label: '状態遷移/シーケンス', link: '/detail/sequences/' },
 						{ label: 'テスト方針', link: '/detail/testing/' },
+						{ label: '環境構築ガイド', link: '/detail/setup/' },
 					],
 				},
 				{
@@ -102,6 +103,7 @@ export default defineConfig({
 					items: [
 						{ label: '目次', link: '/adr/' },
 						{ label: 'ADR-0001 RBAC/RLS', link: '/adr/adr-0001/' },
+						{ label: 'ADR-0002 監査ログ方式', link: '/adr/adr-0002/' },
 						{ label: 'ADR-0003 マルチテナント', link: '/adr/adr-0003/' },
 						{ label: 'ADRテンプレ', link: '/adr/template/' },
 					],

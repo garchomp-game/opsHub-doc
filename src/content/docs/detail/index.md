@@ -14,3 +14,4 @@ description: どう実装するか（DB/RLS/モジュール/シーケンス/テ�
 - [モジュール設計](./modules/)
 - [状態遷移/シーケンス](./sequences/)
 - [テスト方針](./testing/)
+- [環境構築ガイド](./setup/)

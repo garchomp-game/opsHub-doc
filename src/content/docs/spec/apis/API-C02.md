@@ -6,7 +6,7 @@ description: タスクの作成・取得・更新・削除・ステータス変�
 ## 目的 / In-Out / Related
 - **目的**: カンバンボード上のタスク操作仕様を定める
 - **対象範囲（In/Out）**: タスクCRUD、ステータス遷移（D&D対応）
-- **Related**: REQ-C02 / [SCR-C03 タスク管理](../../spec/screens/scr-c03/) / DD-DB-005 tasks
+- **Related**: REQ-C02 / [SCR-C02 タスク管理](../../spec/screens/scr-c02/) / DD-DB-005 tasks
 
 ---
 

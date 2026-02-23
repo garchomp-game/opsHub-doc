@@ -11,23 +11,28 @@ description: SPEC-SCR の目次と画面仕様のステータス管理
 
 ---
 
+## 採番ルール
+
+- `SCR-{Epic}-{REQ番号}` で REQ と 1:1 対応
+- 同一 REQ に複数画面がある場合: `-1`, `-2` のサブ番号を付与（単独画面はサブ番号なし）
+
 ## Must 画面仕様
 
 | SPEC-SCR | 画面名 | REQ | ステータス |
 |---|---|---|---|
-| [SCR-001](./scr-001/) | ログイン | — | Draft |
-| [SCR-002](./scr-002/) | ダッシュボード | REQ-G03 | Draft |
-| [SCR-A01](./scr-a01/) | テナント管理 | REQ-A01 | Draft |
-| [SCR-A02](./scr-a02/) | ユーザー管理 | REQ-A02 | Draft |
-| [SCR-B01](./scr-b01/) | 申請一覧 | REQ-B03 | Draft |
-| [SCR-B02](./scr-b02/) | 申請作成 | REQ-B01 | Draft |
-| [SCR-B03](./scr-b03/) | 申請詳細/承認 | REQ-B02 | Draft |
-| [SCR-C01](./scr-c01/) | プロジェクト一覧 | REQ-C01 | Draft |
-| [SCR-C02](./scr-c02/) | プロジェクト詳細 | REQ-C01 | Draft |
-| [SCR-C03](./scr-c03/) | タスク管理 | REQ-C02 | Draft |
-| [SCR-C04](./scr-c04/) | 工数入力 | REQ-C03 | Draft |
-| [SCR-C05](./scr-c05/) | 工数集計 | REQ-C03 | Draft |
+| [SCR-001](/spec/screens/scr-001/) | ログイン | — | Draft |
+| [SCR-002](/spec/screens/scr-002/) | ダッシュボード | REQ-G03 | Draft |
+| [SCR-A01](/spec/screens/scr-a01/) | テナント管理 | REQ-A01 | Draft |
+| [SCR-A02](/spec/screens/scr-a02/) | ユーザー管理 | REQ-A02 | Draft |
+| [SCR-B01](/spec/screens/scr-b01/) | 申請一覧 | REQ-B03 | Draft |
+| [SCR-B02](/spec/screens/scr-b02/) | 申請作成 | REQ-B01 | Draft |
+| [SCR-B03](/spec/screens/scr-b03/) | 申請詳細/承認 | REQ-B02 | Draft |
+| [SCR-C01-1](/spec/screens/scr-c01-1/) | プロジェクト一覧 | REQ-C01 | Draft |
+| [SCR-C01-2](/spec/screens/scr-c01-2/) | プロジェクト詳細 | REQ-C01 | Draft |
+| [SCR-C02](/spec/screens/scr-c02/) | タスク管理 | REQ-C02 | Draft |
+| [SCR-C03-1](/spec/screens/scr-c03-1/) | 工数入力 | REQ-C03 | Draft |
+| [SCR-C03-2](/spec/screens/scr-c03-2/) | 工数集計 | REQ-C03 | Draft |
 
 ## Should / Could 画面仕様
 
-Must 完了後に着手。概要は [画面テンプレ](./template/) に従って作成する。
+Must 完了後に着手。概要は [画面テンプレ](/spec/screens/template/) に従って作成する。

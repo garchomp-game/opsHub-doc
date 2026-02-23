@@ -123,7 +123,7 @@ description: Epic単位で要件を管理し、受入条件を付与する
   - Given: Member が工数入力画面を開いている
   - When: 日付・タスク・時間を入力して保存する
   - Then: 工数が記録され、PM のプロジェクト工数集計に反映される
-- **Related**: SPEC-SCR-C03
+- **Related**: SPEC-SCR-C03-1 / SPEC-SCR-C03-2
 
 ---
 

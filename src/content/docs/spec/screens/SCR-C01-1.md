@@ -1,15 +1,15 @@
 ---
-title: SPEC-SCR-C01 プロジェクト一覧
+title: SPEC-SCR-C01-1 プロジェクト一覧
 description: プロジェクト管理の一覧画面仕様
 ---
 
 ## 目的 / In-Out / Related
 - **目的**: ユーザーが参加中のプロジェクトを一覧・検索・管理する
-- **対象範囲（In/Out）**: 一覧・フィルタ・新規作成導線。詳細は SCR-C02
+- **対象範囲（In/Out）**: 一覧・フィルタ・新規作成導線。詳細は SCR-C01-2
 - **Related**: REQ-C01 / SPEC-API-C01 / DD-DB-projects
 
 ## 画面情報
-- **画面ID**: SPEC-SCR-C01
+- **画面ID**: SPEC-SCR-C01-1
 - **画面名**: プロジェクト一覧
 - **対象ロール**: 全ロール（表示範囲がロールにより異なる）
 - **URL**: `/projects`
@@ -23,7 +23,7 @@ description: プロジェクト管理の一覧画面仕様
 - **ページネーション**: 20件/ページ
 
 ## 振る舞い・遷移
-- 行クリック → `/projects/[id]`（SCR-C02）へ遷移
+- 行クリック → `/projects/[id]`（SCR-C01-2）へ遷移
 - 「新規作成」→ 作成モーダル or `/projects/new`
 - Member: 自分がアサインされたプロジェクトのみ表示（RLS）
 - PM: 自分が管理するプロジェクトを表示
@@ -32,4 +32,4 @@ description: プロジェクト管理の一覧画面仕様
 - 一覧表示自体はログ対象外
 
 ## 関連リンク
-- Related: REQ-C01 / SPEC-SCR-C02 / SPEC-API-C01
+- Related: REQ-C01 / SPEC-SCR-C01-2 / SPEC-API-C01

@@ -6,7 +6,7 @@ description: プロジェクトの作成・取得・更新・削除の仕様
 ## 目的 / In-Out / Related
 - **目的**: プロジェクト管理AIのCRUD操作仕様を定める
 - **対象範囲（In/Out）**: 一覧取得、詳細取得、作成、更新、メンバー管理
-- **Related**: REQ-C01 / [SCR-C01 PJ一覧](../../spec/screens/scr-c01/) / [SCR-C02 PJ詳細](../../spec/screens/scr-c02/) / DD-DB-003 projects
+- **Related**: REQ-C01 / [SCR-C01-1 PJ一覧](../../spec/screens/scr-c01-1/) / [SCR-C01-2 PJ詳細](../../spec/screens/scr-c01-2/) / DD-DB-003 projects
 
 ---
 

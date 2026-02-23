@@ -1,15 +1,15 @@
 ---
-title: SPEC-SCR-C04 工数入力
+title: SPEC-SCR-C03-1 工数入力
 description: 日次の工数入力画面仕様
 ---
 
 ## 目的 / In-Out / Related
 - **目的**: メンバーが日単位で作業時間をタスクに紐付けて記録する
-- **対象範囲（In/Out）**: 日次入力・週次ビュー・保存。集計は SCR-C05
-- **Related**: REQ-C03 / SPEC-API-C04 / DD-DB-timesheets
+- **対象範囲（In/Out）**: 日次入力・週次ビュー・保存。集計は SCR-C03-2
+- **Related**: REQ-C03 / SPEC-API-C03-1 / DD-DB-timesheets
 
 ## 画面情報
-- **画面ID**: SPEC-SCR-C04
+- **画面ID**: SPEC-SCR-C03-1
 - **画面名**: 工数入力
 - **対象ロール**: Member, PM
 - **URL**: `/timesheet`
@@ -44,4 +44,4 @@ description: 日次の工数入力画面仕様
 - `timesheet.update`: 修正時（before/after記録）
 
 ## 関連リンク
-- Related: REQ-C03 / SPEC-SCR-C05 / SPEC-API-C04
+- Related: REQ-C03 / SPEC-SCR-C03-2 / SPEC-API-C03-1

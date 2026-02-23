@@ -14,23 +14,41 @@ description: SPEC-API の目次とステータス管理
 ## 設計方針
 
 - **原則**: Server Actions を使用（型安全、API Route 不要）
-- **例外**: Webhook受信、外部システム連携は Route Handler
+- **例外**: Webhook受信、外部システム連携、ファイルダウンロードは Route Handler
 - **認可**: 全Action先頭で `auth.getUser()` + ロールチェック
 - **RLS**: Supabase Client SDK 経由のため自動適用
 
+## 採番ルール
+
+- `API-{Epic}-{REQ番号}` で REQ と 1:1 対応
+- 同一 REQ に複数 API がある場合: `-1`, `-2` のサブ番号を付与
+
 ## Must API仕様
 
-| SPEC-API | 名称 | 種別 | REQ | ステータス |
-|---|---|---|---|---|
-| [API-B01](./api-b01/) | 申請一覧取得 | Server Component | REQ-B03 | Draft |
-| [API-B02](./api-b02/) | 申請作成/更新 | Server Action | REQ-B01 | Draft |
-| [API-B03](./api-b03/) | 申請承認/差戻し | Server Action | REQ-B02 | Draft |
-| [API-C01](./api-c01/) | プロジェクトCRUD | Server Action | REQ-C01 | Draft |
-| [API-C02](./api-c02/) | タスクCRUD | Server Action | REQ-C02 | Draft |
-| [API-C03](./api-c03/) | 工数入力/更新 | Server Action | REQ-C03 | Draft |
-| [API-C04](./api-c04/) | 工数集計/CSV出力 | Server Component + Route Handler | REQ-C03 | Draft |
-| [API-A02](./api-a02/) | ユーザー招待/管理 | Server Action | REQ-A02 | Draft |
+| SPEC-API | 名称 | 種別 | REQ | 対応画面 | ステータス |
+|---|---|---|---|---|---|
+| [API-A01](/spec/apis/api-a01/) | テナント管理 | Server Action + Route Handler | REQ-A01 | SCR-A01 | Draft |
+| [API-A02](/spec/apis/api-a02/) | ユーザー招待/管理 | Server Action | REQ-A02 | SCR-A02 | Draft |
+| [API-B01](/spec/apis/api-b01/) | 申請一覧取得 | Server Component | REQ-B03 | SCR-B01 | Draft |
+| [API-B02](/spec/apis/api-b02/) | 申請作成/更新 | Server Action | REQ-B01 | SCR-B02 | Draft |
+| [API-B03](/spec/apis/api-b03/) | 申請承認/差戻し | Server Action | REQ-B02 | SCR-B03 | Draft |
+| [API-C01](/spec/apis/api-c01/) | プロジェクトCRUD | Server Action | REQ-C01 | SCR-C01-1, C01-2 | Draft |
+| [API-C02](/spec/apis/api-c02/) | タスクCRUD | Server Action | REQ-C02 | SCR-C02 | Draft |
+| [API-C03-1](/spec/apis/api-c03-1/) | 工数入力/更新 | Server Action | REQ-C03 | SCR-C03-1 | Draft |
+| [API-C03-2](/spec/apis/api-c03-2/) | 工数集計/CSV出力 | Server Component + Route Handler | REQ-C03 | SCR-C03-2 | Draft |
+
+## API が不要な画面
+
+| 画面 | 理由 |
+|---|---|
+| SCR-001 ログイン | Supabase Auth 標準API（`signInWithPassword`）で完結 |
+| SCR-002 ダッシュボード | Server Component で各テーブルを直接クエリ（専用APIは不要） |
 
 ## Should / Could API仕様
 
 Must完了後に着手。
+
+| SPEC-API | 名称 | REQ | ステータス |
+|---|---|---|---|
+| API-D01 | 経費申請 | REQ-D01 | 未着手 |
+| API-E01 | 請求書管理 | REQ-E01 | 未着手 |

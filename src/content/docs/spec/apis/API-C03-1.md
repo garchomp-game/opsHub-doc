@@ -1,19 +1,19 @@
 ---
-title: SPEC-API-C03 工数入力/更新
+title: SPEC-API-C03-1 工数入力/更新
 description: 工数の記録・更新・削除の仕様
 ---
 
 ## 目的 / In-Out / Related
 - **目的**: 工数入力画面のデータ操作仕様を定める
 - **対象範囲（In/Out）**: 工数登録、バルク更新、日次/週次取得
-- **Related**: REQ-C03 / [SCR-C04 工数入力](../../spec/screens/scr-c04/) / DD-DB-007 timesheets
+- **Related**: REQ-C03 / [SCR-C03-1 工数入力](../../spec/screens/scr-c03-1/) / DD-DB-007 timesheets
 
 ---
 
 ## 日次取得（Server Component）
 
 ### API情報
-- **API ID**: SPEC-API-C03-DAILY
+- **API ID**: SPEC-API-C03-1-DAILY
 - **用途**: 特定日の工数を取得（工数入力画面）
 - **種別**: Server Component 内の直接クエリ
 
@@ -49,7 +49,7 @@ description: 工数の記録・更新・削除の仕様
 ## 週次取得（Server Component）
 
 ### API情報
-- **API ID**: SPEC-API-C03-WEEKLY
+- **API ID**: SPEC-API-C03-1-WEEKLY
 - **用途**: 週間ビューのグリッドデータ
 
 ### Request
@@ -72,7 +72,7 @@ description: 工数の記録・更新・削除の仕様
 ## 登録（Server Action）
 
 ### API情報
-- **API ID**: SPEC-API-C03-CREATE
+- **API ID**: SPEC-API-C03-1-CREATE
 - **種別**: Server Action
 
 ### Request
@@ -113,7 +113,7 @@ type CreateTimesheetInput = {
 ## バルク更新（Server Action）
 
 ### API情報
-- **API ID**: SPEC-API-C03-BULK
+- **API ID**: SPEC-API-C03-1-BULK
 - **用途**: 週間ビューでの一括入力・更新
 - **種別**: Server Action
 
@@ -146,7 +146,7 @@ type BulkTimesheetInput = {
 ## 削除（Server Action）
 
 ### API情報
-- **API ID**: SPEC-API-C03-DELETE
+- **API ID**: SPEC-API-C03-1-DELETE
 - **種別**: Server Action
 
 ### Request

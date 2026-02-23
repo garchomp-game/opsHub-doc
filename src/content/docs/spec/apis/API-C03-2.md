@@ -1,19 +1,19 @@
 ---
-title: SPEC-API-C04 工数集計
+title: SPEC-API-C03-2 工数集計
 description: 工数データの集計・レポート取得の仕様
 ---
 
 ## 目的 / In-Out / Related
 - **目的**: 工数集計画面のデータ取得・CSV出力仕様を定める
 - **対象範囲（In/Out）**: PJ別/メンバー別集計、グラフデータ、CSV生成
-- **Related**: REQ-C03 / [SCR-C05 工数集計](../../spec/screens/scr-c05/) / DD-DB-007 timesheets
+- **Related**: REQ-C03 / [SCR-C03-2 工数集計](../../spec/screens/scr-c03-2/) / DD-DB-007 timesheets
 
 ---
 
 ## PJ別集計（Server Component）
 
 ### API情報
-- **API ID**: SPEC-API-C04-BY-PROJECT
+- **API ID**: SPEC-API-C03-2-BY-PROJECT
 - **用途**: PJ別集計テーブル + グラフ用データ
 - **種別**: Server Component 内の直接クエリ
 
@@ -53,7 +53,7 @@ description: 工数データの集計・レポート取得の仕様
 ## メンバー別集計（Server Component）
 
 ### API情報
-- **API ID**: SPEC-API-C04-BY-MEMBER
+- **API ID**: SPEC-API-C03-2-BY-MEMBER
 - **用途**: メンバー別集計テーブル
 - **種別**: Server Component 内の直接クエリ
 
@@ -82,10 +82,10 @@ description: 工数データの集計・レポート取得の仕様
 
 ---
 
-## CSV出力（Server Action）
+## CSV出力（Route Handler）
 
 ### API情報
-- **API ID**: SPEC-API-C04-EXPORT
+- **API ID**: SPEC-API-C03-2-EXPORT
 - **用途**: 工数データのCSVダウンロード
 - **種別**: Route Handler（`GET /api/timesheets/export`）
   - ※ ファイルダウンロードのため例外的にRoute Handlerを使用

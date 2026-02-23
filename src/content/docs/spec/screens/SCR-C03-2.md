@@ -1,12 +1,12 @@
 ---
-title: SPEC-SCR-C05 工数集計
+title: SPEC-SCR-C03-2 工数集計
 description: プロジェクト・メンバー別の工数集計/レポート画面の仕様
 ---
 
 ## 目的 / In-Out / Related
 - **目的**: 工数データの集計・分析・エクスポート
 - **対象範囲（In/Out）**: PJ別/メンバー別集計、月次レポート、CSV出力
-- **Related**: REQ-C03 / [SCR-C04 工数入力](./scr-c04/) / [SCR-C02 PJ詳細](./scr-c02/)
+- **Related**: REQ-C03 / [SCR-C03-1 工数入力](./scr-c03-1/) / [SCR-C01-2 PJ詳細](./scr-c01-2/)
 
 ---
 

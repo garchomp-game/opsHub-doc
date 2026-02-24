@@ -33,6 +33,14 @@ description: SPEC-SCR の目次と画面仕様のステータス管理
 | [SCR-C03-1](/spec/screens/scr-c03-1/) | 工数入力 | REQ-C03 | Draft |
 | [SCR-C03-2](/spec/screens/scr-c03-2/) | 工数集計 | REQ-C03 | Draft |
 
+## 追加画面仕様
+
+| SPEC-SCR | 画面名 | REQ | ステータス |
+|---|---|---|---|
+| [SCR-A03](/spec/screens/scr-a03/) | 監査ログビューア（`/admin/audit-logs`） | REQ-A03 | Draft |
+| [SCR-D01](/spec/screens/scr-d01/) | 経費管理（`/expenses`, `/expenses/new`） | REQ-D01 | Draft |
+| [SCR-E01](/spec/screens/scr-e01/) | 通知システム（ヘッダー組込 NotificationBell） | REQ-G01 | Draft |
+
 ## Should / Could 画面仕様
 
 Must 完了後に着手。概要は [画面テンプレ](/spec/screens/template/) に従って作成する。

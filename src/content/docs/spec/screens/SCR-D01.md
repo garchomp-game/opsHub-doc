@@ -24,7 +24,7 @@ description: 経費一覧・経費申請（新規作成）画面の仕様
 | ロール | 表示範囲 |
 |---|---|
 | Member / PM / Approver | **自分が作成した経費のみ** (`created_by = 自身`) |
-| Accounting / TenantAdmin | **テナント内の全経費** |
+| Accounting / Tenant Admin | **テナント内の全経費** |
 
 ### 主要ユースケース
 - ユーザーが自分の経費申請一覧を確認する
@@ -148,7 +148,7 @@ description: 経費一覧・経費申請（新規作成）画面の仕様
 | 金額 | InputNumber | ✅ | 1円以上、10,000,000円以下 | `¥` プレフィクス、カンマ区切り表示 |
 | プロジェクト | Select | ✅ | テナント内プロジェクト（planning/active） | 動的に取得 |
 | 説明 | TextArea | — | — | 3行表示、任意入力 |
-| 承認者 | Select | ✅ | Approver/Accounting/TenantAdmin ロールのユーザー | `表示名（ロール）` 形式で表示 |
+| 承認者 | Select | ✅ | Approver/Accounting/Tenant Admin ロールのユーザー | `表示名（ロール）` 形式で表示 |
 
 ### 承認者セレクト表示形式
 - `{display_name}（{ロールラベル}）` の形式で表示

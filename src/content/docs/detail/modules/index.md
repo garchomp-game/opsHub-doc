@@ -208,6 +208,15 @@ export async function writeAuditLog(
 | `requireAuth()` | Server Action / SC で認証済みユーザーを取得 | `/login` へリダイレクト |
 | `requireRole(tenantId, roles)` | Server Action で指定ロールいずれかを要求 | `ERR-AUTH-003` 例外 |
 | `hasRole(user, tenantId, roles)` | SC での UI 分岐（ボタン表示/非表示等） | `false` を返す |
+| `getCurrentUser()` | 認証状態の取得（未認証でも安全） | `null` を返す（例外を投げない） |
+
+> [!NOTE]
+> `getCurrentUser()` は `requireAuth()` と異なり、未認証時にリダイレクトせず `null` を返す。
+> ログイン状態に応じた UI 分岐（例: レイアウトでの条件表示）に利用する。
+
+```ts
+getCurrentUser(): Promise<CurrentUser | null>
+```
 
 **`CurrentUser` 型**:
 ```ts
@@ -241,6 +250,29 @@ export async function createNotification(
     }
 ): Promise<void>
 ```
+
+---
+
+### `getNotificationLink()` — 通知リンク生成
+
+**ファイル**: `lib/notifications.ts`
+
+通知のリソース情報からリンク先 URL を生成する。`NotificationBell` コンポーネント等で利用。
+
+```ts
+export function getNotificationLink(
+    resourceType: string | null,
+    resourceId: string | null
+): string | null
+```
+
+| resourceType | 生成されるリンク |
+|---|---|
+| `workflow` | `/workflows/{resourceId}` |
+| `project` | `/projects/{resourceId}` |
+| `task` | `/projects`（PJ 配下のため一覧へ） |
+| `expense` | `/expenses` |
+| その他 / null | `null` |
 
 ---
 

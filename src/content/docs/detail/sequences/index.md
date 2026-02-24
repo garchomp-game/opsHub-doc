@@ -61,6 +61,32 @@ stateDiagram-v2
 
 ---
 
+## タスク状態遷移
+
+```mermaid
+stateDiagram-v2
+    [*] --> todo : 作成
+    todo --> in_progress : 着手
+    in_progress --> todo : 差戻し
+    in_progress --> done : 完了
+    done --> in_progress : 再開
+```
+
+### 状態遷移ルール
+
+| 現在 | 次 | 備考 |
+|---|---|---|
+| — | todo | タスク作成時のデフォルト |
+| todo | in_progress | 着手 |
+| in_progress | todo | 未着手に戻す |
+| in_progress | done | 完了 |
+| done | in_progress | 完了を取り消して再開 |
+
+> [!NOTE]
+> 実装では `types/index.ts` の `TASK_TRANSITIONS` 定数で許可される遷移を定義している。
+
+---
+
 ## シーケンス: 申請→承認フロー
 
 ```mermaid

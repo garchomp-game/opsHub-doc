@@ -172,8 +172,8 @@ description: OpsHub の主要テーブル定義・制約・Index
 | action | text | NOT NULL | — | workflow.approve 等 |
 | resource_type | text | NOT NULL | — | workflow, project 等 |
 | resource_id | uuid | — | — | 対象リソースID |
-| before | jsonb | — | — | 変更前 |
-| after | jsonb | — | — | 変更後 |
+| before_data | jsonb | — | — | 変更前 |
+| after_data | jsonb | — | — | 変更後 |
 | metadata | jsonb | — | DEFAULT '{}' | IP, UA 等 |
 | created_at | timestamptz | NOT NULL | DEFAULT now() | — |
 

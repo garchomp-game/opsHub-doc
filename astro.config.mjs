@@ -29,6 +29,13 @@ export default defineConfig({
 				},
 				{ label: '規約 (Conventions)', link: '/conventions/' },
 				{
+					label: '📘 ガイド (Guides)',
+					items: [
+						{ label: 'マルチエージェント開発', link: '/guides/multi-agent-workflow/' },
+						{ label: 'Supabase クライアント (Archive)', link: '/guides/supabase-client/' },
+					],
+				},
+				{
 					label: '要件定義 (Requirements)',
 					items: [
 						{ label: '目次', link: '/requirements/' },

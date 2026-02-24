@@ -44,11 +44,13 @@ description: SPEC-API の目次とステータス管理
 | SCR-001 ログイン | Supabase Auth 標準API（`signInWithPassword`）で完結 |
 | SCR-002 ダッシュボード | Server Component で各テーブルを直接クエリ（専用APIは不要） |
 
+## 追加 API仕様
+
+| SPEC-API | 名称 | 種別 | REQ | 対応画面 | ステータス |
+|---|---|---|---|---|---|
+| [API-D01](/spec/apis/api-d01/) | 経費管理 | Server Actions | REQ-D01 | SCR-D01 | Draft |
+| [API-E01](/spec/apis/api-e01/) | 通知API | Server Actions + ヘルパー | REQ-G01 | SCR-E01 | Draft |
+
 ## Should / Could API仕様
 
 Must完了後に着手。
-
-| SPEC-API | 名称 | REQ | ステータス |
-|---|---|---|---|
-| API-D01 | 経費申請 | REQ-D01 | 未着手 |
-| API-E01 | 請求書管理 | REQ-E01 | 未着手 |

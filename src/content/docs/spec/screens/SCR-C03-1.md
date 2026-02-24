@@ -12,7 +12,7 @@ description: 日次の工数入力画面仕様
 - **画面ID**: SPEC-SCR-C03-1
 - **画面名**: 工数入力
 - **対象ロール**: Member, PM
-- **URL**: `/timesheet`
+- **URL**: `/timesheets`
 - **状態**: Draft
 
 ## UI構成（概要）

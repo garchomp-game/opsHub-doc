@@ -24,7 +24,9 @@ description: OpsHub の全画面とURL・ロール・対応REQのマッピング
 |---|---|---|---|---|---|---|
 | 03 | テナント管理 | `/admin/tenants` | IT Admin | REQ-A01 | SCR-A01 | Must |
 | 04 | ユーザー管理 | `/settings/users` | Tenant Admin | REQ-A02 | SCR-A02 | Must |
-| 05 | ロール管理 | `/settings/users/[id]/roles` | Tenant Admin | REQ-A03 | SCR-A03 | Must |
+| 05 | 監査ログビューア | `/admin/audit-logs` | IT Admin, Tenant Admin | REQ-A03 | SCR-A03 | Must |
+
+> **注記**: ロール管理機能は SCR-A02（ユーザー管理）に統合
 
 ## Epic B: ワークフロー
 
@@ -49,14 +51,18 @@ description: OpsHub の全画面とURL・ロール・対応REQのマッピング
 | # | 画面名 | URL（案） | 対象ロール | REQ | SPEC-SCR | 優先度 |
 |---|---|---|---|---|---|---|
 | 14 | 経費一覧 | `/expenses` | Member,Accounting | REQ-D01 | SCR-D01 | Should |
-| 15 | 経費申請 | `/expenses/new` | Member | REQ-D01 | SCR-D02 | Should |
+| 15 | ~~経費申請~~ | ~~`/expenses/new`~~ | — | — | ~~SCR-D02~~ | — |
+
+> **注記**: → SCR-D01 に統合（経費申請フォームは SCR-D01 の画面②として記述）
 | 16 | 経費集計 | `/expenses/summary` | Accounting | REQ-D02 | SCR-D03 | Should |
 
 ## Epic E: 請求
 
 | # | 画面名 | URL（案） | 対象ロール | REQ | SPEC-SCR | 優先度 |
 |---|---|---|---|---|---|---|
-| 17 | 請求一覧 | `/invoices` | Accounting,PM | REQ-E01 | SCR-E01 | Should |
+| 17 | 請求一覧（将来フェーズ） | `/invoices` | Accounting,PM | REQ-E01 | SCR-E01 | Should |
+
+> **注記**: ※ 通知機能は SCR-E01 仕様書として作成済みだが、採番が衝突している。将来的に請求機能を実装する際に再整理が必要
 | 18 | 請求書作成/編集 | `/invoices/[id]` | Accounting | REQ-E01 | SCR-E02 | Should |
 
 ## Epic F: ドキュメント
@@ -69,7 +75,7 @@ description: OpsHub の全画面とURL・ロール・対応REQのマッピング
 
 | # | 画面名 | URL（案） | 対象ロール | REQ | SPEC-SCR | 優先度 |
 |---|---|---|---|---|---|---|
-| 20 | 通知一覧 | `/notifications` | 全員 | REQ-G01 | SCR-G01 | Could |
+| 20 | 通知一覧 → spec/screens/SCR-E01.md として実装済み（ヘッダー組込 NotificationBell） | `/notifications` | 全員 | REQ-G01 | SCR-G01 | Could |
 | 21 | 検索結果 | `/search` | 全員 | REQ-G02 | SCR-G02 | Could |
 
 ## 画面設計の対象（基本設計で詳細化）
@@ -81,7 +87,7 @@ Should/Could 画面は概要レベルとする。
 
 ## 未決事項
 - 設定画面（テナント設定、プロフィール設定）の追加
-- 監査ログ閲覧画面（IT Admin / Tenant Admin 向け）の追加
+- ~~監査ログ閲覧画面（IT Admin / Tenant Admin 向け）の追加~~ → SCR-A03 として正式登録済み
 
 ## 次アクション
 - 基本設計で主要画面（Must）の SPEC-SCR を作成

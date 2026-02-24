@@ -127,6 +127,55 @@ CREATE POLICY "projects_update" ON projects FOR UPDATE
   );
 ```
 
+### project_members
+```sql
+ALTER TABLE project_members ENABLE ROW LEVEL SECURITY;
+
+-- テナントメンバーは自テナントのプロジェクトメンバーを閲覧可能
+CREATE POLICY "project_members_select" ON project_members FOR SELECT
+  USING (tenant_id IN (SELECT get_user_tenant_ids()));
+
+-- PM（担当PJ）/ Tenant Admin のみメンバー追加可能
+CREATE POLICY "project_members_insert" ON project_members FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      EXISTS (SELECT 1 FROM projects WHERE projects.id = project_id AND projects.pm_id = auth.uid())
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- PM（担当PJ）/ Tenant Admin のみメンバー削除可能
+CREATE POLICY "project_members_delete" ON project_members FOR DELETE
+  USING (
+    EXISTS (SELECT 1 FROM projects WHERE projects.id = project_id AND projects.pm_id = auth.uid())
+    OR has_role(tenant_id, 'tenant_admin')
+  );
+```
+
+### tasks
+```sql
+ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
+
+-- テナントメンバーは自テナントのタスクを閲覧可能
+CREATE POLICY "tasks_select" ON tasks FOR SELECT
+  USING (tenant_id IN (SELECT get_user_tenant_ids()));
+
+-- PM（担当PJ）/ Tenant Admin のみタスク作成可能
+CREATE POLICY "tasks_insert" ON tasks FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      EXISTS (SELECT 1 FROM projects WHERE projects.id = project_id AND projects.pm_id = auth.uid())
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- テナントメンバーはタスク更新可能
+CREATE POLICY "tasks_update" ON tasks FOR UPDATE
+  USING (tenant_id IN (SELECT get_user_tenant_ids()));
+```
+
 ### workflows
 ```sql
 ALTER TABLE workflows ENABLE ROW LEVEL SECURITY;
@@ -162,7 +211,7 @@ CREATE POLICY "workflows_update" ON workflows FOR UPDATE
 ```sql
 ALTER TABLE timesheets ENABLE ROW LEVEL SECURITY;
 
--- 自分の工数 + PM は担当PJの工数を閲覧可能
+-- 自分の工数 + PM は担当PJの工数を閲覧可能 + Tenant Admin は全件閲覧
 CREATE POLICY "timesheets_select" ON timesheets FOR SELECT
   USING (
     tenant_id IN (SELECT get_user_tenant_ids())
@@ -173,6 +222,7 @@ CREATE POLICY "timesheets_select" ON timesheets FOR SELECT
         WHERE projects.id = timesheets.project_id
           AND projects.pm_id = auth.uid()
       )
+      OR has_role(tenant_id, 'tenant_admin')
     )
   );
 
@@ -182,13 +232,17 @@ CREATE POLICY "timesheets_insert" ON timesheets FOR INSERT
 
 CREATE POLICY "timesheets_update" ON timesheets FOR UPDATE
   USING (user_id = auth.uid() AND tenant_id IN (SELECT get_user_tenant_ids()));
+
+-- 自分の工数のみ削除可能
+CREATE POLICY "timesheets_delete" ON timesheets FOR DELETE
+  USING (user_id = auth.uid() AND tenant_id IN (SELECT get_user_tenant_ids()));
 ```
 
 ### expenses
 ```sql
 ALTER TABLE expenses ENABLE ROW LEVEL SECURITY;
 
--- 作成者は自分の経費を閲覧、Accounting / TenantAdmin は全件閲覧
+-- 作成者は自分の経費を閲覧、Accounting / Tenant Admin は全件閲覧
 CREATE POLICY "expenses_select" ON expenses FOR SELECT
   USING (
     tenant_id IN (SELECT get_user_tenant_ids())
@@ -207,7 +261,7 @@ CREATE POLICY "expenses_insert" ON expenses FOR INSERT
   );
 
 -- 作成者本人で、紐づくワークフローが draft 状態の場合のみ更新可能
--- Accounting / TenantAdmin も更新可能
+-- Accounting / Tenant Admin も更新可能
 CREATE POLICY "expenses_update" ON expenses FOR UPDATE
   USING (
     tenant_id IN (SELECT get_user_tenant_ids())

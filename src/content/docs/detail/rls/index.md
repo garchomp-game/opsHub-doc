@@ -44,13 +44,49 @@ $$;
 ```sql
 ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
 
--- テナントメンバーは自テナント情報を閲覧可能
+-- テナントメンバーは自テナント情報を閲覧可能（論理削除済みを除外）
 CREATE POLICY "tenant_select" ON tenants FOR SELECT
-  USING (id IN (SELECT get_user_tenant_ids()));
+  USING (
+    id IN (SELECT get_user_tenant_ids())
+    AND deleted_at IS NULL
+  );
 
--- Tenant Admin のみ自テナント設定を更新可能
+-- Tenant Admin のみ自テナント設定を更新可能（論理削除済みを除外）
 CREATE POLICY "tenant_update" ON tenants FOR UPDATE
-  USING (has_role(id, 'tenant_admin'));
+  USING (
+    has_role(id, 'tenant_admin')
+    AND deleted_at IS NULL
+  );
+```
+
+> [!NOTE]
+> `deleted_at IS NULL` 条件は [20260224_000001_tenant_soft_delete](file:///home/garchomp-game/workspace/starlight-test/OpsHub/supabase/migrations/20260224_000001_tenant_soft_delete.sql) マイグレーションで追加。
+> 論理削除されたテナントは SELECT / UPDATE ともに RLS レベルで不可視となる。
+
+### profiles
+```sql
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- 同テナントメンバーの profiles を閲覧可能 + 自分のプロファイルは常に閲覧可能
+CREATE POLICY "profiles_select" ON profiles FOR SELECT
+  USING (
+    id IN (
+      SELECT ur.user_id FROM user_roles ur
+      WHERE ur.tenant_id IN (SELECT get_user_tenant_ids())
+    )
+    OR id = auth.uid()
+  );
+
+-- 自分のプロファイルのみ更新可能
+CREATE POLICY "profiles_update" ON profiles FOR UPDATE
+  USING (id = auth.uid());
+
+-- INSERT はトリガー関数（SECURITY DEFINER）経由のみ
+-- auth.users 作成時に handle_new_user() が自動挿入するため、直接 INSERT は不要
+CREATE POLICY "profiles_insert" ON profiles FOR INSERT
+  WITH CHECK (true);
+
+-- DELETE ポリシーなし（auth.users の ON DELETE CASCADE で自動削除）
 ```
 
 ### user_roles
@@ -148,6 +184,46 @@ CREATE POLICY "timesheets_update" ON timesheets FOR UPDATE
   USING (user_id = auth.uid() AND tenant_id IN (SELECT get_user_tenant_ids()));
 ```
 
+### expenses
+```sql
+ALTER TABLE expenses ENABLE ROW LEVEL SECURITY;
+
+-- 作成者は自分の経費を閲覧、Accounting / TenantAdmin は全件閲覧
+CREATE POLICY "expenses_select" ON expenses FOR SELECT
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      created_by = auth.uid()
+      OR has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- 認証済みテナントメンバーのみ作成可能
+CREATE POLICY "expenses_insert" ON expenses FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND created_by = auth.uid()
+  );
+
+-- 作成者本人で、紐づくワークフローが draft 状態の場合のみ更新可能
+-- Accounting / TenantAdmin も更新可能
+CREATE POLICY "expenses_update" ON expenses FOR UPDATE
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      created_by = auth.uid()
+      OR has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+```
+
+> [!IMPORTANT]
+> expenses の UPDATE は RLS レベルでは作成者 + 管理ロールに許可し、
+> ワークフロー status = 'draft' のチェックは **アプリ層（Server Action）で実施** する。
+> RLS で workflow テーブルを JOIN すると実行計画が複雑化するため、レイヤー分離を選択。
+
 ### audit_logs
 ```sql
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
@@ -165,6 +241,47 @@ CREATE POLICY "audit_logs_insert" ON audit_logs FOR INSERT
 -- UPDATE/DELETE は一切禁止（ポリシーなし = 拒否）
 ```
 
+### notifications
+```sql
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+-- 自分宛の通知のみ閲覧可能
+CREATE POLICY "notifications_select" ON notifications FOR SELECT
+  USING (
+    user_id = auth.uid()
+    AND tenant_id IN (SELECT get_user_tenant_ids())
+  );
+
+-- 自分宛の通知のみ更新可能（既読マーク等）
+CREATE POLICY "notifications_update" ON notifications FOR UPDATE
+  USING (
+    user_id = auth.uid()
+    AND tenant_id IN (SELECT get_user_tenant_ids())
+  );
+
+-- Server Action から INSERT（テナントメンバーであれば許可）
+CREATE POLICY "notifications_insert" ON notifications FOR INSERT
+  WITH CHECK (tenant_id IN (SELECT get_user_tenant_ids()));
+```
+
+### workflow_attachments
+```sql
+ALTER TABLE workflow_attachments ENABLE ROW LEVEL SECURITY;
+
+-- テナントメンバーは自テナントの添付ファイルメタデータを閲覧可能
+CREATE POLICY "workflow_attachments_select" ON workflow_attachments FOR SELECT
+  USING (tenant_id IN (SELECT get_user_tenant_ids()));
+
+-- テナントメンバーが自分のファイルをアップロード可能
+CREATE POLICY "workflow_attachments_insert" ON workflow_attachments FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND uploaded_by = auth.uid()
+  );
+
+-- UPDATE/DELETE はポリシーなし（アプリ層で制御）
+```
+
 ---
 
 ## RLSテスト方針
@@ -176,6 +293,12 @@ CREATE POLICY "audit_logs_insert" ON audit_logs FOR INSERT
 | 自分のデータ | Member が他ユーザーの工数を閲覧/更新できないこと |
 | 承認フロー | 承認者以外が申請のステータスを変更できないこと |
 | 監査ログ保護 | 全ロールで audit_logs の UPDATE/DELETE ができないこと |
+| 論理削除テナント | deleted_at が設定されたテナントの SELECT/UPDATE が不可であること |
+| プロファイル分離 | 別テナントユーザーの profiles が閲覧できないこと |
+| プロファイル更新 | 他ユーザーの profiles を更新できないこと |
+| 経費閲覧制限 | Member が他ユーザーの経費を閲覧できないこと |
+| 経費管理ロール | Accounting ロールが全経費を閲覧・更新できること |
+| 通知分離 | 他ユーザー宛の通知を閲覧できないこと |
 
 ---
 

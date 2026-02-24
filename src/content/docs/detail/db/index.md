@@ -7,7 +7,7 @@ description: OpsHub の主要テーブル定義・制約・Index
 - **目的**: 主要テーブルのスキーマを定義し、実装の基盤を確立する
 - **対象範囲（In）**: テーブル定義、制約、Index、共通カラム規約
 - **対象範囲（Out）**: マイグレーションスクリプト（実装フェーズ）
-- **Related**: [ADR-0003](../../adr/adr-0003/) / [ロール定義](../../requirements/roles/) / [RLS設計](../rls/)
+- **Related**: [ADR-0003](../../adr/adr-0003/) / [ADR-0004](../../adr/adr-0004/) / [ロール定義](../../requirements/roles/) / [RLS設計](../rls/)
 
 ---
 
@@ -34,6 +34,8 @@ description: OpsHub の主要テーブル定義・制約・Index
 | name | text | NOT NULL | — | テナント表示名 |
 | slug | text | NOT NULL | UNIQUE | URL用の識別子 |
 | settings | jsonb | — | DEFAULT '{}' | テナント固有設定 |
+| workflow_seq | integer | NOT NULL | DEFAULT 0 | WF採番カウンター |
+| deleted_at | timestamptz | — | — | 論理削除日時（30日保持後物理削除） |
 | created_at | timestamptz | NOT NULL | DEFAULT now() | — |
 | updated_at | timestamptz | NOT NULL | DEFAULT now() | — |
 
@@ -212,6 +214,77 @@ description: OpsHub の主要テーブル定義・制約・Index
 - **Index**: (tenant_id, workflow_id)
 - **制約**: 1申請あたり最大5ファイル（アプリ層で制御）
 
+## DD-DB-012 profiles（ユーザープロファイル）
+
+auth.users の補助テーブル。Supabase 公式推奨パターンに準拠し、表示名・アバターを管理する。  
+テナント横断で 1 ユーザー 1 レコード（`tenant_id` を持たない）。
+
+| 列名 | 型 | NULL | 制約 | 備考 |
+|---|---|---:|---|---|
+| id | uuid | NOT NULL | PK, FK→auth.users(id) ON DELETE CASCADE | auth.users と 1:1 |
+| display_name | text | NOT NULL | — | 表示名（UI 表示用） |
+| avatar_url | text | — | — | プロフィール画像 URL |
+| updated_at | timestamptz | NOT NULL | DEFAULT now() | トリガーで自動更新 |
+
+- **RLS**: 同テナントメンバーの profiles を SELECT 可 / 本人のみ UPDATE 可 / INSERT はトリガー経由
+- **Related**: [ADR-0004](../../adr/adr-0004/) / [profiles テーブル設計調査](../../research/profiles-table/)
+
+---
+
+## RPC 関数
+
+### next_workflow_number(p_tenant_id uuid) → text
+
+並行安全なワークフロー番号の採番関数。`SELECT FOR UPDATE` で `tenants.workflow_seq` を行ロックし、インクリメント後に `WF-001` 形式のテキストを返す。
+
+| 引数 | 型 | 説明 |
+|---|---|---|
+| p_tenant_id | uuid | 対象テナントID |
+
+| 戻り値 | 型 | 例 |
+|---|---|---|
+| workflow_number | text | `WF-001`, `WF-042` |
+
+- **SECURITY DEFINER**: サービスロールで実行
+- **並行制御**: `FOR UPDATE` 行ロックにより同時採番でも重複なし
+
+---
+
+## トリガー / 関数
+
+### handle_new_user() — profiles 自動作成
+
+`auth.users` への INSERT 時に `profiles` レコードを自動作成するトリガー関数。
+
+| 項目 | 値 |
+|---|---|
+| トリガー名 | `on_auth_user_created` |
+| イベント | AFTER INSERT ON `auth.users` |
+| 関数 | `public.handle_new_user()` |
+| SECURITY | DEFINER |
+| display_name 決定ロジック | `COALESCE(raw_user_meta_data->>'name', email, 'Unknown')` |
+| 重複時 | `ON CONFLICT (id) DO UPDATE SET display_name = EXCLUDED.display_name` |
+
+### handle_user_updated() — profiles 同期
+
+`auth.users` の `raw_user_meta_data->>'name'` 変更時に `profiles.display_name` を同期するトリガー関数。
+
+| 項目 | 値 |
+|---|---|
+| トリガー名 | `on_auth_user_updated` |
+| イベント | AFTER UPDATE ON `auth.users` |
+| 関数 | `public.handle_user_updated()` |
+| SECURITY | DEFINER |
+| 条件 | `NEW.raw_user_meta_data->>'name' IS DISTINCT FROM OLD.raw_user_meta_data->>'name'` |
+
+### profiles_updated_at — updated_at 自動更新
+
+| 項目 | 値 |
+|---|---|
+| トリガー名 | `profiles_updated_at` |
+| イベント | BEFORE UPDATE ON `public.profiles` |
+| 関数 | `public.update_updated_at()` |
+
 ---
 
 ## ER図（主要テーブル）
@@ -223,6 +296,9 @@ erDiagram
     tenants ||--o{ workflows : has
     tenants ||--o{ audit_logs : has
 
+    auth_users ||--|| profiles : has
+    auth_users ||--o{ user_roles : has
+
     projects ||--o{ project_members : has
     projects ||--o{ tasks : has
     projects ||--o{ timesheets : has
@@ -231,11 +307,24 @@ erDiagram
     tasks ||--o{ timesheets : has
 
     workflows ||--o{ expenses : links
+    workflows ||--o{ workflow_attachments : has
 
+    tenants {
+        text name
+        text slug
+        integer workflow_seq
+        timestamptz deleted_at
+    }
     user_roles {
         uuid user_id
         uuid tenant_id
         text role
+    }
+    profiles {
+        uuid id PK
+        text display_name
+        text avatar_url
+        timestamptz updated_at
     }
     projects {
         text name

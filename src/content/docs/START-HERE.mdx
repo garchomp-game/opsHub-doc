@@ -14,9 +14,10 @@ import { Aside, Steps } from '@astrojs/starlight/components';
   初回は「規約 → 要件 → 基本設計 → 詳細設計 → ADR」の順で読む。
 </Aside>
 
-## 30秒サマリ（埋める）
-- **一言で**: （例）申請・工数・経費・請求・ドキュメントを統合する業務SaaS
-- **想定期間**: 1年規模の大規模開発検証
+## 30秒サマリ
+- **一言で**: ワークフロー申請・プロジェクト管理・工数管理・経費管理を統合するマルチテナント業務SaaS
+- **技術スタック**: Next.js 16 (App Router) + Ant Design 6 + Supabase (Docker self-hosting)
+- **認証/認可**: Supabase Auth + RLS + 6 ロール (member, approver, pm, accounting, it_admin, tenant_admin)
 - **AI API**: 今回は利用しない（外部AI APIの従量課金なし前提）
 
 ## 追跡（トレーサビリティ）ルール

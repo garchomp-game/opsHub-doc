@@ -63,6 +63,9 @@ export default defineConfig({
 								{ label: 'SCR-C02 タスク管理', link: '/spec/screens/scr-c02/' },
 								{ label: 'SCR-C03-1 工数入力', link: '/spec/screens/scr-c03-1/' },
 								{ label: 'SCR-C03-2 工数集計', link: '/spec/screens/scr-c03-2/' },
+								{ label: 'SCR-D01 経費管理', link: '/spec/screens/scr-d01/' },
+								{ label: 'SCR-E01 通知システム', link: '/spec/screens/scr-e01/' },
+								{ label: 'SCR-A03 監査ログ', link: '/spec/screens/scr-a03/' },
 							],
 						},
 						{
@@ -79,6 +82,8 @@ export default defineConfig({
 								{ label: 'API-C02 タスクCRUD', link: '/spec/apis/api-c02/' },
 								{ label: 'API-C03-1 工数入力', link: '/spec/apis/api-c03-1/' },
 								{ label: 'API-C03-2 工数集計', link: '/spec/apis/api-c03-2/' },
+								{ label: 'API-D01 経費管理', link: '/spec/apis/api-d01/' },
+								{ label: 'API-E01 通知システム', link: '/spec/apis/api-e01/' },
 							],
 						},
 						{ label: '例外/エラー方針', link: '/spec/errors/' },
@@ -96,6 +101,7 @@ export default defineConfig({
 						{ label: '状態遷移/シーケンス', link: '/detail/sequences/' },
 						{ label: 'テスト方針', link: '/detail/testing/' },
 						{ label: '環境構築ガイド', link: '/detail/setup/' },
+						{ label: '調査メモ: profiles', link: '/detail/research/profiles-table/' },
 					],
 				},
 				{
@@ -105,6 +111,8 @@ export default defineConfig({
 						{ label: 'ADR-0001 RBAC/RLS', link: '/adr/adr-0001/' },
 						{ label: 'ADR-0002 監査ログ方式', link: '/adr/adr-0002/' },
 						{ label: 'ADR-0003 マルチテナント', link: '/adr/adr-0003/' },
+						{ label: 'ADR-0004 profiles テーブル', link: '/adr/adr-0004/' },
+						{ label: 'ADR-0005 CLI vs Compose', link: '/adr/adr-0005/' },
 						{ label: 'ADRテンプレ', link: '/adr/template/' },
 					],
 				},
@@ -113,6 +121,34 @@ export default defineConfig({
 					items: [
 						{ label: 'PLAN-2026-02-22', link: '/plans/plan-2026-02-22/' },
 						{ label: 'レビュー依頼テンプレ', link: '/plans/review-template/' },
+					],
+				},
+				{
+					label: '📒 開発ログ (Logs)',
+					collapsed: true,
+					items: [
+						{ label: '目次', link: '/logs/' },
+						{
+							label: 'レビュー記録',
+							collapsed: true,
+							autogenerate: { directory: 'logs/reviews' },
+						},
+						{
+							label: 'ウォークスルー',
+							collapsed: true,
+							autogenerate: { directory: 'logs/walkthroughs' },
+						},
+						{
+							label: 'プロンプト',
+							collapsed: true,
+							autogenerate: { directory: 'logs/prompts' },
+						},
+						{
+							label: 'QA',
+							collapsed: true,
+							autogenerate: { directory: 'logs/qa' },
+						},
+						{ label: 'ナレッジ', link: '/logs/knowledge/' },
 					],
 				},
 				{

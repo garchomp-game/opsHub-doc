@@ -7,7 +7,7 @@ description: 監査ログの閲覧・フィルタ・差分表示画面の仕様
 - **目的**: テナント内の操作履歴（監査ログ）を閲覧し、「いつ・誰が・何をしたか」を追跡する
 - **対象範囲（In）**: ログ一覧表示、フィルタリング、ページネーション、変更差分表示
 - **対象範囲（Out）**: ログ書込みロジック（→ [監査ログ方針](../../spec/audit-logging/)）、CSV/JSONエクスポート（未実装）
-- **Related**: [監査ログ方針](../../spec/audit-logging/) / [DD-DB-009 audit_logs](../../detail/db/) / NFR-05
+- **Related**: REQ-A03 / [監査ログ方針](../../spec/audit-logging/) / [DD-DB-009 audit_logs](../../detail/db/) / NFR-05
 
 ---
 

@@ -6,7 +6,7 @@ description: プロジェクト詳細画面の仕様
 ## 目的 / In-Out / Related
 - **目的**: プロジェクトの詳細情報と関連データを一覧表示する
 - **対象範囲（In/Out）**: PJ情報、メンバー、タスク概要、工数・経費集計
-- **Related**: REQ-C01 / [SCR-C01-1 PJ一覧](./scr-c01-1/) / [SCR-C02 タスク管理](./scr-c02/)
+- **Related**: REQ-C01 / [API-C01 プロジェクトCRUD](../apis/api-c01/) / [SCR-C01-1 PJ一覧](./scr-c01-1/) / [SCR-C02 タスク管理](./scr-c02/)
 
 ---
 

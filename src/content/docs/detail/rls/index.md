@@ -336,6 +336,157 @@ CREATE POLICY "workflow_attachments_insert" ON workflow_attachments FOR INSERT
 -- UPDATE/DELETE はポリシーなし（アプリ層で制御）
 ```
 
+### invoices
+```sql
+ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+
+-- Accounting / Tenant Admin は全件閲覧、PM は自担当PJの請求のみ閲覧
+ CREATE POLICY "invoices_select" ON invoices FOR SELECT
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+      OR (
+        has_role(tenant_id, 'pm')
+        AND project_id IN (
+          SELECT id FROM projects WHERE pm_id = auth.uid()
+        )
+      )
+    )
+  );
+
+-- Accounting / Tenant Admin のみ作成可能、created_by は自分
+ CREATE POLICY "invoices_insert" ON invoices FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND created_by = auth.uid()
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- Accounting / Tenant Admin のみ更新可能
+CREATE POLICY "invoices_update" ON invoices FOR UPDATE
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- Accounting / Tenant Admin のみ削除可能、draft 状態のみ
+CREATE POLICY "invoices_delete" ON invoices FOR DELETE
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND status = 'draft'
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+```
+
+> [!NOTE]
+> PM の SELECT は自担当 PJ の請求のみに制限。全請求一覧にアクセスするには Accounting または Tenant Admin ロールが必要。
+
+### invoice_items
+```sql
+ALTER TABLE invoice_items ENABLE ROW LEVEL SECURITY;
+
+-- 親 invoices の SELECT 権限に準拠
+CREATE POLICY "invoice_items_select" ON invoice_items FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM invoices
+      WHERE invoices.id = invoice_items.invoice_id
+        AND invoices.tenant_id = invoice_items.tenant_id
+    )
+  );
+
+-- 親 invoices の INSERT 権限に準拠
+CREATE POLICY "invoice_items_insert" ON invoice_items FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- 親 invoices の UPDATE 権限に準拠
+CREATE POLICY "invoice_items_update" ON invoice_items FOR UPDATE
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- 親 invoices の DELETE 権限に準拠（CASCADE でも削除される）
+CREATE POLICY "invoice_items_delete" ON invoice_items FOR DELETE
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      has_role(tenant_id, 'accounting')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+```
+
+> [!IMPORTANT]
+> `invoice_items_select` は invoices テーブルへの `EXISTS` サブクエリで制御。
+> 親請求書の RLS を経由するため、PM が自 PJ の請求明細を閲覧するケースも自動的にカバーされる。
+
+### documents
+```sql
+ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+
+-- プロジェクトメンバーは閲覧可能（project_id が NULL の場合はテナントメンバー全員）
+CREATE POLICY "documents_select" ON documents FOR SELECT
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      project_id IS NULL
+      OR EXISTS (
+        SELECT 1 FROM project_members
+        WHERE project_members.project_id = documents.project_id
+          AND project_members.user_id = auth.uid()
+      )
+      OR has_role(tenant_id, 'pm')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- PM / Tenant Admin のみアップロード可能
+CREATE POLICY "documents_insert" ON documents FOR INSERT
+  WITH CHECK (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND uploaded_by = auth.uid()
+    AND (
+      has_role(tenant_id, 'pm')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+
+-- PM / Tenant Admin のみ削除可能
+CREATE POLICY "documents_delete" ON documents FOR DELETE
+  USING (
+    tenant_id IN (SELECT get_user_tenant_ids())
+    AND (
+      has_role(tenant_id, 'pm')
+      OR has_role(tenant_id, 'tenant_admin')
+    )
+  );
+```
+
+> [!NOTE]
+> documents の UPDATE ポリシーは未定義。ファイルの差し替えは DELETE → INSERT で対応する方針。
+> `documents_select` で `project_id IS NULL` のドキュメントはテナント共通ドキュメントとして全メンバーに公開される。
+
 ---
 
 ## RLSテスト方針
@@ -353,6 +504,12 @@ CREATE POLICY "workflow_attachments_insert" ON workflow_attachments FOR INSERT
 | 経費閲覧制限 | Member が他ユーザーの経費を閲覧できないこと |
 | 経費管理ロール | Accounting ロールが全経費を閲覧・更新できること |
 | 通知分離 | 他ユーザー宛の通知を閲覧できないこと |
+| 請求書閲覧制限 | Member が請求書を閲覧できないこと、PM は自 PJ の請求のみ閲覧可能 |
+| 請求書作成制限 | Member / PM が請求書を作成できないこと |
+| 請求書削除制限 | draft 以外のステータスの請求書を削除できないこと |
+| ドキュメント閲覧制限 | プロジェクトメンバー以外がプロジェクト紐付きドキュメントを閲覧できないこと |
+| ドキュメント作成制限 | Member がドキュメントをアップロードできないこと（PM / Tenant Admin のみ） |
+| ドキュメント削除制限 | Member がドキュメントを削除できないこと（PM / Tenant Admin のみ） |
 
 ---
 

@@ -87,6 +87,38 @@ stateDiagram-v2
 
 ---
 
+## 請求書ステータス遷移
+
+```mermaid
+stateDiagram-v2
+    [*] --> draft : 作成（REQ-E01）
+
+    draft --> sent : 送付
+    draft --> cancelled : キャンセル
+
+    sent --> paid : 入金確認
+    sent --> cancelled : キャンセル
+
+    paid --> [*]
+    cancelled --> [*]
+```
+
+### 状態遷移ルール
+
+| 現在 | 次 | 操作者 | 条件 |
+|---|---|---|---|
+| — | draft | Accounting / Tenant Admin | — |
+| draft | sent | Accounting / Tenant Admin | 明細が1件以上存在 |
+| draft | cancelled | Accounting / Tenant Admin | — |
+| sent | paid | Accounting / Tenant Admin | 入金確認済み |
+| sent | cancelled | Accounting / Tenant Admin | — |
+
+> [!NOTE]
+> `paid` と `cancelled` は終端状態。一度遷移すると他の状態には戻せない。
+> 状態の変更は Accounting または Tenant Admin ロールのみ許可。
+
+---
+
 ## シーケンス: 申請→承認フロー
 
 ```mermaid

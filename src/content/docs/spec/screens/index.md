@@ -39,7 +39,12 @@ description: SPEC-SCR の目次と画面仕様のステータス管理
 |---|---|---|---|
 | [SCR-A03](/spec/screens/scr-a03/) | 監査ログビューア（`/admin/audit-logs`） | REQ-A03 | Draft |
 | [SCR-D01](/spec/screens/scr-d01/) | 経費管理（`/expenses`, `/expenses/new`） | REQ-D01 | Draft |
+| [SCR-D03](/spec/screens/scr-d03/) | 経費集計 | REQ-D02 | Draft |
 | [SCR-E01](/spec/screens/scr-e01/) | 通知システム（ヘッダー組込 NotificationBell） | REQ-G01 | Draft |
+| [SCR-F01](/spec/screens/scr-f01/) | ドキュメント管理 | REQ-F01 | Draft |
+| [SCR-G02](/spec/screens/scr-g02/) | 全文検索 | REQ-G02 | Draft |
+| [SCR-H01](/spec/screens/scr-h01/) | 請求一覧 | REQ-E01 | Draft |
+| [SCR-H02](/spec/screens/scr-h02/) | 請求書詳細/編集 | REQ-E01 | Draft |
 
 ## Should / Could 画面仕様
 

@@ -24,6 +24,8 @@ src/
 │   │   └── callback/
 │   │       └── route.ts                     # OAuth コールバック
 │   ├── api/
+│   │   ├── health/
+│   │   │   └── route.ts                     # ヘルスチェック API（NFR-04b）
 │   │   └── timesheets/
 │   │       └── export/
 │   │           └── route.ts                 # 工数CSV エクスポート API
@@ -34,7 +36,8 @@ src/
 │   │   │   ├── dashboard.ts                 # ダッシュボード用データ取得
 │   │   │   └── notifications.ts             # 通知 CRUD（既読・一括既読）
 │   │   ├── _components/
-│   │   │   └── NotificationBell.tsx         # 通知ベル (CC)
+│   │   │   ├── NotificationBell.tsx         # 通知ベル (CC)
+│   │   │   └── HeaderSearchBar.tsx          # ヘッダー検索バー (CC)
 │   │   ├── workflows/
 │   │   │   ├── page.tsx                     # 申請一覧 (SC)
 │   │   │   ├── new/
@@ -54,11 +57,16 @@ src/
 │   │   │   │   ├── page.tsx                 # プロジェクト詳細 (SC)
 │   │   │   │   ├── _components/
 │   │   │   │   │   └── ProjectDetailClient.tsx  # 編集・メンバー管理 (CC)
-│   │   │   │   └── tasks/
-│   │   │   │       ├── page.tsx             # タスク管理 (SC)
-│   │   │   │       ├── _actions.ts          # タスク Server Actions
+│   │   │   │   ├── tasks/
+│   │   │   │   │   ├── page.tsx             # タスク管理 (SC)
+│   │   │   │   │   ├── _actions.ts          # タスク Server Actions
+│   │   │   │   │   └── _components/
+│   │   │   │   │       └── KanbanBoard.tsx  # カンバンボード (CC)
+│   │   │   │   └── documents/
+│   │   │   │       ├── page.tsx             # ドキュメント管理 (SC)
+│   │   │   │       ├── _actions.ts          # ドキュメント Server Actions
 │   │   │   │       └── _components/
-│   │   │   │           └── KanbanBoard.tsx  # カンバンボード (CC)
+│   │   │   │           └── DocumentListClient.tsx  # ドキュメント一覧 (CC)
 │   │   │   └── _actions.ts                  # プロジェクト Server Actions
 │   │   ├── timesheets/
 │   │   │   ├── page.tsx                     # 工数入力 (SC)
@@ -74,7 +82,30 @@ src/
 │   │   │   ├── page.tsx                     # 経費一覧 (SC)
 │   │   │   ├── new/
 │   │   │   │   └── page.tsx                 # 経費登録 (SC)
-│   │   │   └── _actions.ts                  # 経費 Server Actions
+│   │   │   ├── _actions.ts                  # 経費 Server Actions
+│   │   │   └── summary/
+│   │   │       ├── page.tsx                 # 経費集計 (SC)
+│   │   │       ├── _actions.ts              # 経費集計 Server Actions
+│   │   │       └── _components/
+│   │   │           └── ExpenseSummaryClient.tsx  # 集計フィルタ・チャート (CC)
+│   │   ├── invoices/
+│   │   │   ├── page.tsx                     # 請求一覧 (SC)
+│   │   │   ├── new/
+│   │   │   │   └── page.tsx                 # 請求書作成 (SC)
+│   │   │   ├── [id]/
+│   │   │   │   ├── page.tsx                 # 請求書詳細/編集 (SC)
+│   │   │   │   └── _components/
+│   │   │   │       └── InvoicePrintView.tsx  # 印刷プレビュー (CC)
+│   │   │   ├── _actions.ts                  # 請求書 Server Actions
+│   │   │   ├── _constants.ts                # 請求書ステータス定数・遷移ルール
+│   │   │   └── _components/
+│   │   │       ├── InvoiceListClient.tsx     # 請求一覧UI (CC)
+│   │   │       └── InvoiceForm.tsx           # 請求書フォーム (CC)
+│   │   ├── search/
+│   │   │   ├── page.tsx                     # 全文検索結果 (SC)
+│   │   │   ├── _actions.ts                  # 全文検索 Server Actions
+│   │   │   └── _components/
+│   │   │       └── SearchResultsClient.tsx   # 検索結果UI (CC)
 │   │   └── admin/
 │   │       ├── tenant/
 │   │       │   ├── page.tsx                 # テナント設定 (SC)
@@ -101,6 +132,7 @@ src/
 │   │   └── middleware.ts                    # セッション更新
 │   ├── actions.ts                           # withAuth(), writeAuditLog()
 │   ├── auth.ts                              # requireAuth(), requireRole(), hasRole()
+│   ├── logger.ts                            # 構造化ロガー（NFR-04a）
 │   └── notifications.ts                     # createNotification()
 ├── types/
 │   ├── database.ts                          # supabase gen types 自動生成
@@ -130,7 +162,7 @@ src/
 - **配置**: 利用するページの直下に `_components/` として配置
 
 ### ライブラリ層（lib/）
-- **責務**: 横断的関心事（認証、監査、通知、Supabase クライアント管理）
+- **責務**: 横断的関心事（認証、監査、通知、構造化ロギング、Supabase クライアント管理）
 - **ルール**: 全モジュールから共有される基盤コード
 
 ---
@@ -295,9 +327,9 @@ const name = row.profiles?.display_name ?? row.created_by;
 
 ## 共通定数
 
-**ファイル**: `types/index.ts`
+### `types/index.ts` — 全体共通定数
 
-### ラベル・カラー定数
+#### ラベル・カラー定数
 
 | 定数名 | 型 | 用途 |
 |---|---|---|
@@ -305,7 +337,7 @@ const name = row.profiles?.display_name ?? row.created_by;
 | `USER_STATUS_LABELS` | `Record<UserStatus, string>` | ユーザーステータス表示名 |
 | `USER_STATUS_COLORS` | `Record<UserStatus, string>` | ステータスごとの Ant Design カラー名 |
 
-### 状態遷移ルール
+#### 状態遷移ルール
 
 | 定数名 | 用途 |
 |---|---|
@@ -313,13 +345,28 @@ const name = row.profiles?.display_name ?? row.created_by;
 | `PROJECT_TRANSITIONS` | プロジェクトステータス遷移 |
 | `WORKFLOW_TRANSITIONS` | ワークフローステータス遷移 |
 
-### ActionResult 統一レスポンス型
+#### ActionResult 統一レスポンス型
 
 ```ts
 type ActionResult<T> =
     | { success: true; data: T }
     | { success: false; error: { code: string; message: string; fields?: Record<string, string> } };
 ```
+
+### `invoices/_constants.ts` — 請求書定数
+
+| 定数名 | 型 | 用途 |
+|---|---|---|
+| `INVOICE_STATUSES` | `readonly ["draft", "sent", "paid", "cancelled"]` | 請求書ステータス列挙 |
+| `INVOICE_STATUS_LABELS` | `Record<InvoiceStatus, string>` | ステータス表示名（`draft` → `"下書き"` 等） |
+| `INVOICE_STATUS_COLORS` | `Record<InvoiceStatus, string>` | ステータスごとの Ant Design カラー名 |
+| `INVOICE_STATUS_TRANSITIONS` | `Record<InvoiceStatus, InvoiceStatus[]>` | ステータス遷移ルール（`draft` → `sent` / `cancelled` 等） |
+
+### `documents/_actions.ts` — ドキュメント管理定数
+
+| 定数名 | 用途 |
+|---|---|
+| `ALLOWED_MIME_TYPES` | ドキュメントアップロードで許可される MIME タイプ一覧（PDF, Word, Excel, PNG, JPEG, テキスト） |
 
 ---
 
@@ -415,16 +462,18 @@ const [pendingApprovals, myWorkflows, myTasks, weeklyHours] = await Promise.all(
 - **Client Component**: `WeeklyTimesheetClient.tsx`, `ReportClient.tsx`
 - **API Route**: `api/timesheets/export/route.ts`
 - **公開I/F**: `upsertTimesheet()`, `getWeeklyTimesheet()`, `getProjectSummary()`
+- **ヘルパー**: `escapeCsvField()` — CSV フィールドのエスケープ処理
 - **依存**: `withAuth`, `requireRole`, `hasRole`
 - **データ境界**: `timesheets` テーブル
 
 ### DD-MOD-004 経費モジュール
 
-- **責務**: 経費の登録・一覧表示・ワークフロー連携
-- **ページ**: `expenses/page.tsx`, `expenses/new/page.tsx`
-- **Actions**: `expenses/_actions.ts`
-- **公開I/F**: `createExpense()`, `getExpenses()`
-- **依存**: `withAuth`, `writeAuditLog`, `requireRole`
+- **責務**: 経費の登録・一覧表示・集計・ワークフロー連携
+- **ページ**: `expenses/page.tsx`, `expenses/new/page.tsx`, `expenses/summary/page.tsx`
+- **Actions**: `expenses/_actions.ts`, `expenses/summary/_actions.ts`
+- **Client Component**: `ExpenseSummaryClient.tsx`（集計フィルタ・チャート表示）
+- **公開I/F**: `createExpense()`, `getExpenses()`, `getExpenseSummaryByCategory()`, `getExpenseSummaryByProject()`, `getExpenseSummaryByMonth()`, `getExpenseStats()`
+- **依存**: `withAuth`, `writeAuditLog`, `requireRole`, `hasRole`
 - **データ境界**: `expenses` テーブル
 
 ### DD-MOD-005 通知モジュール
@@ -455,6 +504,60 @@ const [pendingApprovals, myWorkflows, myTasks, weeklyHours] = await Promise.all(
 - **依存**: `withAuth`, `writeAuditLog`, `requireRole`, Supabase Admin Client
 - **データ境界**: `tenants`, `user_roles`, `profiles`, `audit_logs` テーブル
 
+### DD-MOD-008 請求書モジュール
+
+- **責務**: 請求書の CRUD、ステータス遷移（下書き → 送付済 → 入金済 / キャンセル）、印刷プレビュー、請求番号の並行安全な採番
+- **ページ**: `invoices/page.tsx`, `invoices/new/page.tsx`, `invoices/[id]/page.tsx`
+- **Actions**: `invoices/_actions.ts`
+- **Client Component**: `InvoiceListClient.tsx`（一覧・フィルタ）, `InvoiceForm.tsx`（作成/編集フォーム）, `InvoicePrintView.tsx`（印刷プレビュー）
+- **定数**: `invoices/_constants.ts`（`INVOICE_STATUS_LABELS`, `INVOICE_STATUS_COLORS`, `INVOICE_STATUS_TRANSITIONS`）
+- **公開I/F**: `getInvoices()`, `getInvoice()`, `createInvoice()`, `updateInvoice()`, `updateInvoiceStatus()`, `deleteInvoice()`
+- **依存**: `withAuth`, `writeAuditLog`, `requireRole`, `hasRole`, `next_invoice_number()` RPC
+- **データ境界**: `invoices`, `invoice_items` テーブル
+
+### DD-MOD-009 ドキュメント管理モジュール
+
+- **責務**: プロジェクト配下のドキュメントのアップロード・ダウンロード・削除、Supabase Storage 連携
+- **ページ**: `projects/[id]/documents/page.tsx`
+- **Actions**: `projects/[id]/documents/_actions.ts`
+- **Client Component**: `DocumentListClient.tsx`（ファイル一覧・アップロード UI）
+- **定数**: `ALLOWED_MIME_TYPES`（許可 MIME タイプ）
+- **ヘルパー**: `formatFileSize()` — ファイルサイズの人間可読変換（Client Component 内）
+- **公開I/F**: `getDocuments()`, `uploadDocument()`, `deleteDocument()`, `getDownloadUrl()`
+- **依存**: `withAuth`, `writeAuditLog`, `hasRole`, `logger`, Supabase Storage
+- **データ境界**: `documents` テーブル、`project-documents` Storage バケット
+
+### DD-MOD-010 全文検索モジュール
+
+- **責務**: ワークフロー・プロジェクト・タスク・経費の横断検索、ヘッダー検索バー
+- **ページ**: `search/page.tsx`
+- **Actions**: `search/_actions.ts`
+- **Client Component**: `SearchResultsClient.tsx`（検索結果・カテゴリタブ）, `HeaderSearchBar.tsx`（ヘッダー共通検索バー）
+- **ヘルパー**: `escapeLikePattern()` — SQL LIKE メタ文字エスケープ、`highlightText()` — 検索キーワードハイライト
+- **公開I/F**: `searchAll()`
+- **技術**: `pg_trgm` + GIN インデックスによる部分一致検索（ADR-0006）
+- **依存**: `withAuth`, `hasRole`, `Promise.all` 並行検索
+- **データ境界**: `workflows`, `projects`, `tasks`, `expenses` テーブル（横断読取）
+
+### DD-MOD-011 運用基盤モジュール
+
+- **責務**: 構造化ロギング、ヘルスチェック
+- **ライブラリ**: `lib/logger.ts` — JSON 形式の構造化ロガー（`LOG_LEVEL` 環境変数でフィルタリング）
+- **API Route**: `api/health/route.ts` — ヘルスチェックエンドポイント（DB 死活確認、NFR-04b）
+- **公開I/F**: `logger.error()`, `logger.warn()`, `logger.info()`, `logger.debug()`, `GET /api/health`
+- **依存**: Supabase Admin Client
+
+---
+
+## 新規ユーティリティ関数
+
+| 関数名 | ファイル | 用途 |
+|---|---|---|
+| `escapeCsvField()` | `api/timesheets/export/route.ts` | CSV フィールドのエスケープ（ダブルクォート囲み） |
+| `escapeLikePattern()` | `search/_actions.ts` | SQL LIKE のメタ文字（`%`, `_`, `\`）エスケープ |
+| `formatFileSize()` | `documents/_components/DocumentListClient.tsx` | ファイルサイズの人間可読変換（例: `1.5 MB`） |
+| `highlightText()` | `search/_components/SearchResultsClient.tsx` | 検索キーワードを `<mark>` タグでハイライト |
+
 ---
 
 ## 決定済み事項
@@ -465,4 +568,8 @@ const [pendingApprovals, myWorkflows, myTasks, weeklyHours] = await Promise.all(
 | UIライブラリ | Ant Design 6 に統一、共通ラベル定数は `types/index.ts` に集約 |
 | コロケーション | `_actions.ts` / `_components/` はページ直下に配置（Next.js private folder 規約） |
 | WF採番 | `next_workflow_number()` RPC で FOR UPDATE ロックによる並行安全な採番 |
+| 請求書採番 | `next_invoice_number()` RPC で FOR UPDATE ロックによる並行安全な採番 |
 | ユーザー表示名 | `profiles` テーブル + トリガー同期、SELECT 時は JOIN パターン |
+| 全文検索 | `pg_trgm` + GIN インデックスによる ILIKE 部分一致検索（ADR-0006） |
+| 構造化ログ | `lib/logger.ts` で JSON 出力、`LOG_LEVEL` 環境変数制御（NFR-04a） |
+| ファイル管理 | Supabase Storage `project-documents` バケット + MIME タイプ制限 |

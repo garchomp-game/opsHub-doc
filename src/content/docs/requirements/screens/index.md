@@ -60,10 +60,10 @@ description: OpsHub の全画面とURL・ロール・対応REQのマッピング
 
 | # | 画面名 | URL（案） | 対象ロール | REQ | SPEC-SCR | 優先度 |
 |---|---|---|---|---|---|---|
-| 17 | 請求一覧（将来フェーズ） | `/invoices` | Accounting,PM | REQ-E01 | SCR-E01 | Should |
+| 17 | 請求一覧 | `/invoices` | Accounting,PM | REQ-E01 | SCR-H01 | Should |
+| 18 | 請求書詳細/編集 | `/invoices/[id]` | Accounting | REQ-E01 | SCR-H02 | Should |
 
-> **注記**: ※ 通知機能は SCR-E01 仕様書として作成済みだが、採番が衝突している。将来的に請求機能を実装する際に再整理が必要
-| 18 | 請求書作成/編集 | `/invoices/[id]` | Accounting | REQ-E01 | SCR-E02 | Should |
+> **注記**: 旧 SCR-E01 は通知システム（REQ-G01）として使用済みのため、請求画面は SCR-H01/H02 として採番
 
 ## Epic F: ドキュメント
 

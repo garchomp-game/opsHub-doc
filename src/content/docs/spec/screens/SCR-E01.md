@@ -6,7 +6,7 @@ description: ヘッダーベルアイコンによる通知表示・既読管理�
 ## 目的 / In-Out / Related
 - **目的**: 通知の閲覧・既読管理のUI仕様を定める
 - **対象範囲（In/Out）**: NotificationBell コンポーネント、Popover一覧、既読操作、リソース遷移
-- **Related**: [API-E01 通知API](../../spec/apis/api-e01/) / [DD-DB-010 notifications](../../detail/db/) / [ダッシュボード](../../spec/screens/scr-001/)
+- **Related**: REQ-G01 / [API-E01 通知API](../../spec/apis/api-e01/) / [DD-DB-010 notifications](../../detail/db/) / [ダッシュボード](../../spec/screens/scr-001/)
 
 ---
 

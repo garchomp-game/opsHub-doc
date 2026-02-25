@@ -6,7 +6,7 @@ description: ユーザー一覧・招待・ロール管理画面の仕様
 ## 目的 / In-Out / Related
 - **目的**: テナント内のユーザー管理（招待、ロール設定、無効化）
 - **対象範囲（In/Out）**: ユーザーCRUD、ロール割当、招待フロー
-- **Related**: REQ-A02 / [SCR-A01 テナント管理](./scr-a01/) / [ロール定義](../../requirements/roles/) / [ADR-0001 RBAC](../../adr/adr-0001/)
+- **Related**: REQ-A02 / [API-A02 ユーザー管理](../apis/api-a02/) / [SCR-A01 テナント管理](./scr-a01/) / [ロール定義](../../requirements/roles/) / [ADR-0001 RBAC](../../adr/adr-0001/)
 
 ---
 

@@ -17,3 +17,4 @@ description: なぜその設計にしたかを残し、将来の手戻りを減�
 - [ADR-0003 マルチテナント分離戦略](./adr-0003/) — Accepted
 - [ADR-0004 profiles テーブル導入](./adr-0004/) — Accepted
 - [ADR-0005 Supabase CLI 採用](./adr-0005/) — Accepted
+- [ADR-0006 検索方式の選定](./adr-0006/) — Accepted

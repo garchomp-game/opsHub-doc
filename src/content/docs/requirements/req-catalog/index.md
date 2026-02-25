@@ -47,7 +47,7 @@ description: Epic単位で要件を管理し、受入条件を付与する
   - Given: Tenant Admin がユーザー詳細画面を開いている
   - When: ユーザーに「Approver」ロールを追加する
   - Then: そのユーザーが即座に承認権限を持ち、ワークフロー承認画面にアクセスできる
-- **Related**: [ロール定義](../roles/) / ADR-0001 / DD-DB-001
+- **Related**: [ロール定義](../roles/) / ADR-0001 / SCR-A03 / DD-DB-001
 
 ---
 
@@ -144,7 +144,7 @@ description: Epic単位で要件を管理し、受入条件を付与する
 - **目的**: 経費をプロジェクト別・科目別・月別に集計する
 - **優先度**: Should
 - **ステークホルダー**: Accounting, PM
-- **Related**: SPEC-SCR-D02
+- **Related**: SCR-D03 / API-D02
 
 ---
 
@@ -159,7 +159,7 @@ description: Epic単位で要件を管理し、受入条件を付与する
   - Given: Accounting が請求一覧画面を開いている
   - When: プロジェクト・工数・経費から請求書を生成する
   - Then: 請求書PDFがダウンロードでき、ステータスが「下書き」になる
-- **Related**: ADR-0004（PDF生成） / SPEC-SCR-E01
+- **Related**: ADR-0004（PDF生成） / SCR-H01 / SCR-H02 / API-H01
 
 ---
 
@@ -187,7 +187,7 @@ description: Epic単位で要件を管理し、受入条件を付与する
 ### REQ-G02 全文検索
 - **目的**: 申請・プロジェクト・ドキュメント横断で検索する
 - **優先度**: Could
-- **Related**: ADR-0005（検索方式）
+- **Related**: SCR-G02 / API-G01 / ADR-0006（検索方式）
 
 ### REQ-G03 ダッシュボード/レポート
 - **目的**: KPI（工数消化率、経費推移、申請リードタイム等）を可視化する

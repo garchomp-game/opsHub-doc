@@ -6,7 +6,7 @@ description: プロジェクト・メンバー別の工数集計/レポート画
 ## 目的 / In-Out / Related
 - **目的**: 工数データの集計・分析・エクスポート
 - **対象範囲（In/Out）**: PJ別/メンバー別集計、月次レポート、CSV出力
-- **Related**: REQ-C03 / [SCR-C03-1 工数入力](./scr-c03-1/) / [SCR-C01-2 PJ詳細](./scr-c01-2/)
+- **Related**: REQ-C03 / [API-C03-2 工数集計](../apis/api-c03-2/) / [SCR-C03-1 工数入力](./scr-c03-1/) / [SCR-C01-2 PJ詳細](./scr-c01-2/)
 
 ---
 

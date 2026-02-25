@@ -49,7 +49,11 @@ description: SPEC-API の目次とステータス管理
 | SPEC-API | 名称 | 種別 | REQ | 対応画面 | ステータス |
 |---|---|---|---|---|---|
 | [API-D01](/spec/apis/api-d01/) | 経費管理 | Server Actions | REQ-D01 | SCR-D01 | Draft |
+| [API-D02](/spec/apis/api-d02/) | 経費集計API | Server Actions | REQ-D02 | SCR-D03 | Draft |
 | [API-E01](/spec/apis/api-e01/) | 通知API | Server Actions + ヘルパー | REQ-G01 | SCR-E01 | Draft |
+| [API-F01](/spec/apis/api-f01/) | ドキュメント管理API | Server Actions | REQ-F01 | SCR-F01 | Draft |
+| [API-G01](/spec/apis/api-g01/) | 全文検索API | Server Actions | REQ-G02 | SCR-G02 | Draft |
+| [API-H01](/spec/apis/api-h01/) | 請求API | Server Actions | REQ-E01 | SCR-H01, H02 | Draft |
 
 ## Should / Could API仕様
 

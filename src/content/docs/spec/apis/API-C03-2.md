@@ -84,9 +84,6 @@ description: 工数データの集計・レポート取得の仕様
 
 ## CSV出力（Route Handler）
 
-> [!WARNING]
-> **Phase 2 で実装予定** — 以下の仕様は設計段階であり、現時点では未実装です。
-
 ### API情報
 - **API ID**: SPEC-API-C03-2-EXPORT
 - **用途**: 工数データのCSVダウンロード

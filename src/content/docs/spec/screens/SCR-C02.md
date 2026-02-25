@@ -6,7 +6,7 @@ description: カンバンボード形式のタスク管理画面の仕様
 ## 目的 / In-Out / Related
 - **目的**: プロジェクト内タスクの作成・管理・進捗追跡
 - **対象範囲（In/Out）**: カンバンビュー、タスクCRUD、担当者割当
-- **Related**: REQ-C02 / [SCR-C01-2 PJ詳細](./scr-c01-2/) / [SCR-C03-1 工数入力](./scr-c03-1/)
+- **Related**: REQ-C02 / [API-C02 タスクCRUD](../apis/api-c02/) / [SCR-C01-2 PJ詳細](./scr-c01-2/) / [SCR-C03-1 工数入力](./scr-c03-1/)
 
 ---
 

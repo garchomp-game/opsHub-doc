@@ -7,7 +7,7 @@ description: OpsHub の主要テーブル定義・制約・Index
 - **目的**: 主要テーブルのスキーマを定義し、実装の基盤を確立する
 - **対象範囲（In）**: テーブル定義、制約、Index、共通カラム規約
 - **対象範囲（Out）**: マイグレーションスクリプト（実装フェーズ）
-- **Related**: [ADR-0003](../../adr/adr-0003/) / [ADR-0004](../../adr/adr-0004/) / [ロール定義](../../requirements/roles/) / [RLS設計](../rls/)
+- **Related**: [ADR-0003](../../adr/adr-0003/) / [ADR-0004](../../adr/adr-0004/) / [ADR-0006](../../adr/adr-0006/) / [ロール定義](../../requirements/roles/) / [RLS設計](../rls/)
 
 ---
 
@@ -35,6 +35,7 @@ description: OpsHub の主要テーブル定義・制約・Index
 | slug | text | NOT NULL | UNIQUE | URL用の識別子 |
 | settings | jsonb | — | DEFAULT '{}' | テナント固有設定 |
 | workflow_seq | integer | NOT NULL | DEFAULT 0 | WF採番カウンター |
+| invoice_seq | integer | NOT NULL | DEFAULT 0 | 請求書採番カウンター |
 | deleted_at | timestamptz | — | — | 論理削除日時（30日保持後物理削除） |
 | created_at | timestamptz | NOT NULL | DEFAULT now() | — |
 | updated_at | timestamptz | NOT NULL | DEFAULT now() | — |
@@ -229,6 +230,102 @@ auth.users の補助テーブル。Supabase 公式推奨パターンに準拠し
 - **RLS**: 同テナントメンバーの profiles を SELECT 可 / 本人のみ UPDATE 可 / INSERT はトリガー経由
 - **Related**: [ADR-0004](../../adr/adr-0004/) / [profiles テーブル設計調査](../../research/profiles-table/)
 
+## DD-DB-013 invoices（請求書）
+
+| 列名 | 型 | NULL | 制約 | 備考 |
+|---|---|---:|---|---|
+| id | uuid | NOT NULL | PK | — |
+| tenant_id | uuid | NOT NULL | FK→tenants(id) | — |
+| invoice_number | text | NOT NULL | UNIQUE per tenant | INV-YYYY-NNNN 形式 |
+| project_id | uuid | — | FK→projects(id) | 紐付けPJ |
+| client_name | text | NOT NULL | — | 請求先名 |
+| issued_date | date | NOT NULL | — | 発行日 |
+| due_date | date | NOT NULL | — | 支払期限 |
+| subtotal | numeric(12,0) | NOT NULL | DEFAULT 0 | 小計 |
+| tax_rate | numeric(5,2) | NOT NULL | DEFAULT 10.00 | 税率（%） |
+| tax_amount | numeric(12,0) | NOT NULL | DEFAULT 0 | 税額 |
+| total_amount | numeric(12,0) | NOT NULL | DEFAULT 0 | 合計金額 |
+| status | text | NOT NULL | CHECK(IN draft,sent,paid,cancelled) DEFAULT 'draft' | — |
+| notes | text | — | — | 備考 |
+| created_by | uuid | NOT NULL | FK→auth.users(id) | 作成者 |
+| created_at | timestamptz | NOT NULL | DEFAULT now() | — |
+| updated_at | timestamptz | NOT NULL | DEFAULT now() | トリガーで自動更新 |
+
+- **Index**: (tenant_id, status), (tenant_id, project_id), (tenant_id, created_at DESC)
+- **採番**: `invoice_number` は `next_invoice_number(p_tenant_id)` RPC で発行。`tenants.invoice_seq` を使用
+- **状態遷移**: [請求書ステータス遷移](../sequences/#請求書ステータス遷移) を参照
+
+## DD-DB-014 invoice_items（請求明細）
+
+| 列名 | 型 | NULL | 制約 | 備考 |
+|---|---|---:|---|---|
+| id | uuid | NOT NULL | PK | — |
+| tenant_id | uuid | NOT NULL | FK→tenants(id) | — |
+| invoice_id | uuid | NOT NULL | FK→invoices(id) ON DELETE CASCADE | 親請求書 |
+| description | text | NOT NULL | — | 明細内容 |
+| quantity | numeric(10,2) | NOT NULL | DEFAULT 1 | 数量 |
+| unit_price | numeric(12,0) | NOT NULL | — | 単価 |
+| amount | numeric(12,0) | NOT NULL | — | 金額（quantity × unit_price の非正規化） |
+| sort_order | integer | NOT NULL | DEFAULT 0 | 表示順 |
+| created_at | timestamptz | NOT NULL | DEFAULT now() | — |
+
+- **Index**: (tenant_id, invoice_id)
+- **CASCADE**: 請求書削除時に明細も自動削除（`ON DELETE CASCADE`）
+- **非正規化**: `amount` は `quantity * unit_price` の計算結果を保存。アプリ層で整合性を保証
+
+## DD-DB-015 documents（ドキュメント）
+
+| 列名 | 型 | NULL | 制約 | 備考 |
+|---|---|---:|---|---|
+| id | uuid | NOT NULL | PK | — |
+| tenant_id | uuid | NOT NULL | FK→tenants(id) | — |
+| project_id | uuid | — | FK→projects(id) | 紐付けPJ（任意） |
+| name | text | NOT NULL | — | ファイル表示名 |
+| file_path | text | NOT NULL | — | Supabase Storage パス |
+| file_size | bigint | NOT NULL | DEFAULT 0 | ファイルサイズ（バイト） |
+| mime_type | text | NOT NULL | — | MIME type |
+| uploaded_by | uuid | NOT NULL | FK→auth.users(id) | アップロード者 |
+| created_at | timestamptz | NOT NULL | DEFAULT now() | — |
+| updated_at | timestamptz | NOT NULL | DEFAULT now() | トリガーで自動更新 |
+
+- **Index**: (tenant_id, project_id)
+- **Related**: [SCR-F01](../../spec/screens/SCR-F01/) / [API-F01](../../spec/apis/API-F01/)
+
+---
+
+## 全文検索インデックス（pg_trgm）
+
+[ADR-0006](../../adr/adr-0006/) の決定に基づき、`pg_trgm` 拡張と GIN インデックスを使用した日本語対応の部分一致検索を実現する。
+
+### 拡張の有効化
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+```
+
+### GIN インデックス一覧
+
+| 対象テーブル | カラム | インデックス名 |
+|---|---|---|
+| workflows | title, description | `idx_workflows_search` |
+| projects | name, description | `idx_projects_search` |
+| tasks | title | `idx_tasks_search` |
+| expenses | description | `idx_expenses_search` |
+| documents | name | `idx_documents_search` |
+
+```sql
+CREATE INDEX idx_workflows_search ON workflows USING GIN (title gin_trgm_ops, description gin_trgm_ops);
+CREATE INDEX idx_projects_search ON projects USING GIN (name gin_trgm_ops, description gin_trgm_ops);
+CREATE INDEX idx_tasks_search ON tasks USING GIN (title gin_trgm_ops);
+CREATE INDEX idx_expenses_search ON expenses USING GIN (description gin_trgm_ops);
+CREATE INDEX idx_documents_search ON documents USING GIN (name gin_trgm_ops);
+```
+
+> [!NOTE]
+> `gin_trgm_ops` は 3-gram 分割による部分一致検索を実現。LIKE/ILIKE クエリおよび `%` ワイルドカード検索が GIN インデックスで高速化される。
+> 日本語は 3 文字以上の検索語で効果的に機能する。
+> workflows / projects は `title`（`name`）+ `description` の複合 GIN インデックスにより、一つのインデックスで複数カラムの部分一致検索に対応する。
+
 ---
 
 ## RPC 関数
@@ -247,6 +344,22 @@ auth.users の補助テーブル。Supabase 公式推奨パターンに準拠し
 
 - **SECURITY DEFINER**: サービスロールで実行
 - **並行制御**: `FOR UPDATE` 行ロックにより同時採番でも重複なし
+
+### next_invoice_number(p_tenant_id uuid) → text
+
+`next_workflow_number` と同方式の並行安全な請求書番号の採番関数。`SELECT FOR UPDATE` で `tenants.invoice_seq` を行ロックし、インクリメント後に `INV-{YYYY}-{NNNN}` 形式のテキストを返す。
+
+| 引数 | 型 | 説明 |
+|---|---|---|
+| p_tenant_id | uuid | 対象テナントID |
+
+| 戻り値 | 型 | 例 |
+|---|---|---|
+| invoice_number | text | `INV-2026-0001`, `INV-2026-0042` |
+
+- **SECURITY DEFINER**: サービスロールで実行
+- **並行制御**: `FOR UPDATE` 行ロックにより同時採番でも重複なし
+  - 年が変わった場合のリセット処理はアプリ層で判断
 
 ---
 
@@ -295,6 +408,8 @@ erDiagram
     tenants ||--o{ projects : has
     tenants ||--o{ workflows : has
     tenants ||--o{ audit_logs : has
+    tenants ||--o{ invoices : has
+    tenants ||--o{ documents : has
 
     auth_users ||--|| profiles : has
     auth_users ||--o{ user_roles : has
@@ -303,16 +418,21 @@ erDiagram
     projects ||--o{ tasks : has
     projects ||--o{ timesheets : has
     projects ||--o{ expenses : has
+    projects ||--o{ invoices : has
+    projects ||--o{ documents : has
 
     tasks ||--o{ timesheets : has
 
     workflows ||--o{ expenses : links
     workflows ||--o{ workflow_attachments : has
 
+    invoices ||--o{ invoice_items : has
+
     tenants {
         text name
         text slug
         integer workflow_seq
+        integer invoice_seq
         timestamptz deleted_at
     }
     user_roles {
@@ -346,6 +466,25 @@ erDiagram
         jsonb before_data
         jsonb after_data
     }
+    invoices {
+        text invoice_number
+        text status
+        numeric total_amount
+        uuid project_id
+    }
+    invoice_items {
+        text description
+        numeric quantity
+        numeric unit_price
+        numeric amount
+    }
+    documents {
+        text name
+        text file_path
+        bigint file_size
+        text mime_type
+        uuid uploaded_by
+    }
 ```
 
 ---
@@ -356,5 +495,4 @@ erDiagram
 - **ロールバック**: 各マイグレーションに対応するdownファイルを用意
 
 ## 未決事項
-- invoices テーブル（請求書）の詳細定義（Should優先度のためPhase 2完了後）
-- documents テーブル（ドキュメント管理）の定義（Could優先度）
+- なし（documents テーブルは DD-DB-015 で定義済み）

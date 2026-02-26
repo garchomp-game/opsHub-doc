@@ -110,7 +110,7 @@ npx supabase db seed --local
 | データ | 内容 |
 |---|---|
 | テナント | `テスト株式会社`（tenant_id 固定値） |
-| ユーザー | admin@test.com (Tenant Admin), pm@test.com (PM), member@test.com (Member) |
+| ユーザー | admin@test-corp.example.com (Tenant Admin), pm@test-corp.example.com (PM), member@test-corp.example.com (Member) |
 | パスワード | 全ユーザー共通: `password123`（開発用） |
 | プロジェクト | 「サンプルプロジェクト」（status: active） |
 | タスク | 3件（todo, in_progress, done 各1件） |
@@ -119,11 +119,12 @@ npx supabase db seed --local
 
 | ロール | メール | パスワード |
 |---|---|---|
-| Tenant Admin | admin@test.com | password123 |
-| PM | pm@test.com | password123 |
-| Member | member@test.com | password123 |
-| Approver | approver@test.com | password123 |
-| Accounting | accounting@test.com | password123 |
+| Tenant Admin | admin@test-corp.example.com | password123 |
+| IT Admin | it_admin@system.example.com | password123 |
+| PM | pm@test-corp.example.com | password123 |
+| Member | member@test-corp.example.com | password123 |
+| Approver | approver@test-corp.example.com | password123 |
+| Accounting | accounting@test-corp.example.com | password123 |
 
 ---
 
